@@ -11,11 +11,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author daofeng.xjf
- *
+ * <p>
  * 服务端回调服务
  * 可选接口
  * 用户可以基于此服务，实现服务端向客户端动态推送的功能
- *
  */
 public class CallbackServiceImpl implements CallbackService {
 
@@ -26,14 +25,14 @@ public class CallbackServiceImpl implements CallbackService {
                 if (!listeners.isEmpty()) {
                     for (Map.Entry<String, CallbackListener> entry : listeners.entrySet()) {
                         try {
-                            entry.getValue().receiveServerMsg(new Date().toString());
+                            entry.getValue().receiveServerMsg(System.getProperty("quota") + " " + new Date().toString());
                         } catch (Throwable t1) {
                             listeners.remove(entry.getKey());
                         }
                     }
                 }
             }
-        }, 5000, 5000);
+        }, 0, 5000);
     }
 
     private Timer timer = new Timer();

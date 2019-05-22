@@ -27,4 +27,10 @@ public class TestServerFilter implements Filter {
         }
 
     }
+
+    @Override
+    public Result onResponse(Result result, Invoker<?> invoker, Invocation invocation) {
+        return result;
+    }
+
 }
