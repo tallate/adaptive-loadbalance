@@ -21,6 +21,7 @@
 ## 01 Docker consumer 启动后立即退出/无法启动
 
 - 首先请确定已经在本地修改了 host 文件，添加了 provider 的ip。需要注意，provider 的 ip 需要使用外网/局域网的真实ip，不能使用 locahost 或 127.0.0.0 等环回地址。
+- 默认需要启动三个 provider 容器，consumer才能正常启动，如果想只启动一个 provider，需要编辑 consumer 的`com.aliware.tianchi.netty.HttpProcessHandler#buildUrls`方法，将不需要的 provider url 注释掉。
 
 1. 手动启动 consumer container
 
