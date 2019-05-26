@@ -348,9 +348,9 @@ com.aliware.tianchi.TestServerFilter
 
 - 配置 hosts，指向本地 IP ,或者将 internal-service 项目中的 `com.aliware.tianchi.netty.HttpProcessHandler#buildUrls` 相关地址修改为本地 IP,也可以在 `buildUrls` 中添加多个不同的 Provider 地址。
   ```
-  127.0.0.1 provider-small
-  127.0.0.1 provider-medium
-  127.0.0.1 provider-large
+  ${宿主机IP地址} provider-small
+  ${宿主机IP地址} provider-medium
+  ${宿主机IP地址} provider-large
   ```
 - 构建 demo 的 workspace 项目
 - 运行 `internal-service` 项目中的 `com.aliware.tianchi.MyProvider` 启动 Provider，为了模拟负载均衡场景，需要启动三个 Provider，分别指定启动参数 `-Dquota=large`、`-Dquota=medium`、`-Dquota=small`
