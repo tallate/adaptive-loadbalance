@@ -39,3 +39,8 @@
     tail -f /root/runtime/logs/stdout.log /root/runtime/logs/service-consumer.log
     ```
     如果有连接 provider 不成功的错误，一般是由于 provider 的 url 配置不对或 host 没配置，修改 localhost/127.0.0.1 等地址为真实ip即可修复
+    
+## 02. 配置了自己的代码仓库，使用评测脚本进行镜像构建时报 "Host key verification failed"
+构建镜像时，需要从阿里云仓库 clone 代码，如果自己的代码仓库是 private的，需要在 dockerfile 中配置能够下载代码的 ssh 私钥。
+
+配置方式可参考[build-docker-image-clone-private-repo-ssh-key/](https://vsupalov.com/build-docker-image-clone-private-repo-ssh-key/)
