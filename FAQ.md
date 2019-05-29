@@ -40,7 +40,29 @@
     ```
     如果有连接 provider 不成功的错误，一般是由于 provider 的 url 配置不对或 host 没配置，修改 localhost/127.0.0.1 等地址为真实ip即可修复
     
-## 02. 配置了自己的代码仓库，使用评测脚本进行镜像构建时报 "Host key verification failed"
-构建镜像时，需要从阿里云仓库 clone 代码，如果自己的代码仓库是 private的，需要在 dockerfile 中配置能够下载代码的 ssh 私钥。
+## 02. 配置了自己的代码仓库，使用评测脚本进行镜像构建时提示 "Host key verification failed" 错误
+原因: 构建镜像时，需要从阿里云仓库 clone 代码，如果自己的代码仓库是 private的，需要在 dockerfile 中配置能够下载代码的 ssh 私钥。官方默认 demo 是 public 的，所以不需要配置私钥。
 
-配置方式可参考[build-docker-image-clone-private-repo-ssh-key/](https://vsupalov.com/build-docker-image-clone-private-repo-ssh-key/)
+详细配置方式和原理可参考[build-docker-image-clone-private-repo-ssh-key](https://vsupalov.com/build-docker-image-clone-private-repo-ssh-key/)
+
+或者按照如下方式更改：
+
+1. 添加 ssh 公钥到阿里云代码仓库
+2. 在 `benchmarker/dockerfile/debian-jdk8-consumer` 文件夹下添加 id_rsa 文件，内容为你的私钥，以`-----BEGIN RSA PRIVATE KEY-----`开头
+3. 编辑 Dockerfile ，在 `ARG user_code_address` 一行下添加如下代码
+
+    ```shell
+    RUN mkdir /root/.ssh && chmod 700 /root/.ssh
+    COPY id_rsa /root/.ssh/id_rsa
+    RUN touch /root/.ssh/known_hosts && \
+       ssh-keyscan code.aliyun.com >> /root/.ssh/known_hosts && \
+       chmod 600 /root/.ssh/id_rsa
+    ```
+4. 在 provider 文件夹下重复步骤 2和3 
+5. 重新运行评测脚本
+
+## 03. 执行 benchmark 失败，提示 " check signinature failed"
+
+原因： 使用了本地构建的 `internal-service` 导致 `service-provider.jar` 的 md5 与官方镜像中的不一致。
+
+解决方案：注释掉`benchmarker/workflow/benchmark/workflow.py` 中的43行 `self.check_signatures()`
