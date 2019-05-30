@@ -70,3 +70,11 @@
 ## 04.  我是 windows 系统，想按照 localtest 搭建本机测试环境，应该怎么安装 wrk?
 
 请参考 [windows_localtest](https://code.aliyun.com/leezepeng/localtest) , 感谢选手 @李泽言 提供教程。
+
+## 05. 能否获取 provider 的最大线程数配置
+
+允许
+
+## 06. 能否使用 provider 的最大线程数作为限流值
+
+允许。但不允许以 hardcode 的方式设定为固定值，如线程数为200/400/600的时候，固定将限流值设置为 200 。
