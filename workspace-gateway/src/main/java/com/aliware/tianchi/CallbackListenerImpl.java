@@ -16,6 +16,7 @@ public class CallbackListenerImpl implements CallbackListener {
     public void receiveServerMsg(String msg) {
         这里接收provider的推送
         System.out.println("receive msg from server :" + msg);
+        asdasdasd从provider获取负载信息
     }
 
 }

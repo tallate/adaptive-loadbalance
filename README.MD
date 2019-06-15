@@ -348,9 +348,9 @@ com.aliware.tianchi.TestServerFilter
 
 - 配置 hosts，指向本地 IP ,或者将 internal-service 项目中的 `com.aliware.tianchi.netty.HttpProcessHandler#buildUrls` 相关地址修改为本地 IP,也可以在 `buildUrls` 中添加多个不同的 Provider 地址。
   ```
-  127.0.0.1 provider-small
-  127.0.0.1 provider-medium
-  127.0.0.1 provider-large
+  ${宿主机IP地址} provider-small
+  ${宿主机IP地址} provider-medium
+  ${宿主机IP地址} provider-large
   ```
 - 构建 demo 的 workspace 项目
 - 运行 `internal-service` 项目中的 `com.aliware.tianchi.MyProvider` 启动 Provider，为了模拟负载均衡场景，需要启动三个 Provider，分别指定启动参数 `-Dquota=large`、`-Dquota=medium`、`-Dquota=small`
@@ -375,6 +375,8 @@ wrk -t4 -c1024 -d60s -T5 --script=./wrk.lua --latency http://localhost:8087/invo
 ![benchmark_architect](assets/benchmark_architect.png)
 
 所有程序均执行在 docker 中，docker 镜像由评测程序自动根据选手的代码仓库构建，不需要自行构建，若需要自行构建测试，请参考[docker](https://code.aliyun.com/middlewarerace2019/docker/tree/master)
+
+构建环境失败可先查阅 [FAQ](https://code.aliyun.com/middlewarerace2019/adaptive-loadbalance/blob/master/FAQ.md) 查找解决方案
 
 - Consumer ： 1 台 4c4g
 - Provider ： 3台
