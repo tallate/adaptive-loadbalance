@@ -47,5 +47,6 @@ public class CallbackServiceImpl implements CallbackService {
     public void addListener(String key, CallbackListener listener) {
         listeners.put(key, listener);
         listener.receiveServerMsg(new Date().toString()); // send notification for change
+        发回去
     }
 }
