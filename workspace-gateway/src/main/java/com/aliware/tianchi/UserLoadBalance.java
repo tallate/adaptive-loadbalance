@@ -21,6 +21,7 @@ public class UserLoadBalance implements LoadBalance {
 
     @Override
     public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) throws RpcException {
+        这里通过负载均衡来选择一个provider地址
         return invokers.get(ThreadLocalRandom.current().nextInt(invokers.size()));
     }
 }
