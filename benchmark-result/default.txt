@@ -1,0 +1,26 @@
+hgc@hgc-X555LD:~/wkspce/tallate/tianchi/adaptive-loadbalance/internal-service$ wrk -t4 -c1024 -d60s -T5 --script=./wrk.lua --latency http://localhost:8087/invoke
+Running 1m test @ http://localhost:8087/invoke
+  4 threads and 1024 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    77.84ms   94.06ms   1.63s    91.06%
+    Req/Sec     4.18k     1.38k    6.18k    82.64%
+  Latency Distribution
+     50%   55.36ms
+     75%  100.09ms
+     90%  163.29ms
+     99%  462.86ms
+  995236 requests in 1.00m, 40.88MB read
+  Non-2xx or 3xx responses: 128812
+Requests/sec:  16563.70
+Transfer/sec:    696.69KB
+--------------------------
+Durations:       60.09s
+Requests:        995236
+Avg RT:          77.84ms
+Max RT:          1626.561ms
+Min RT:          0.14ms
+Error requests:  128812
+Valid requests:  866424
+MAX-QPS/THREAD:  6181.00
+AVG-QPS:         14419.88
+--------------------------

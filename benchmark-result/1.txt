@@ -2,25 +2,25 @@ hgc@hgc-X555LD:~/wkspce/tallate/tianchi/adaptive-loadbalance/internal-service$ w
 Running 1m test @ http://localhost:8087/invoke
   4 threads and 1024 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency    77.84ms   94.06ms   1.63s    91.06%
-    Req/Sec     4.18k     1.38k    6.18k    82.64%
+    Latency    62.52ms   54.34ms 716.93ms   75.68%
+    Req/Sec     4.56k   574.23     6.21k    78.98%
   Latency Distribution
-     50%   55.36ms
-     75%  100.09ms
-     90%  163.29ms
-     99%  462.86ms
-  995236 requests in 1.00m, 40.88MB read
-  Non-2xx or 3xx responses: 128812
-Requests/sec:  16563.70
-Transfer/sec:    696.69KB
+     50%   50.26ms
+     75%   86.50ms
+     90%  132.25ms
+     99%  250.50ms
+  1086741 requests in 1.00m, 44.65MB read
+  Non-2xx or 3xx responses: 141670
+Requests/sec:  18082.27
+Transfer/sec:    760.83KB
 --------------------------
-Durations:       60.09s
-Requests:        995236
-Avg RT:          77.84ms
-Max RT:          1626.561ms
-Min RT:          0.14ms
-Error requests:  128812
-Valid requests:  866424
-MAX-QPS/THREAD:  6181.00
-AVG-QPS:         14419.88
+Durations:       60.10s
+Requests:        1086741
+Avg RT:          62.52ms
+Max RT:          716.935ms
+Min RT:          0.172ms
+Error requests:  141670
+Valid requests:  945071
+MAX-QPS/THREAD:  6210.00
+AVG-QPS:         15725.02
 --------------------------

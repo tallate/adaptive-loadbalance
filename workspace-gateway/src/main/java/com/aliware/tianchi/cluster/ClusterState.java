@@ -1,7 +1,7 @@
-package com.aliware.tianchi.lb;
+package com.aliware.tianchi.cluster;
 
-import com.aliware.Cluster;
-import com.aliware.Server;
+import com.aliware.cluster.Cluster;
+import com.aliware.cluster.Server;
 
 public interface ClusterState {
 

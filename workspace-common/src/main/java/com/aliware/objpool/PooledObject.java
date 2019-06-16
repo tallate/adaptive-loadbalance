@@ -1,8 +1,7 @@
 package com.aliware.objpool;
 
-import java.lang.ref.WeakReference;
+public interface PooledObject<T> {
 
-public class PooledObject<T> {
 
-    WeakReference<T> wrap(T obj);
+
 }

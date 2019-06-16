@@ -17,36 +17,47 @@ import java.util.List;
  */
 public class DiskUtil {
 
-    public static double getDiskRatio4Linux() {
-        String rootName = "/";
-        File rootFile = new File(rootName);
-        if (rootFile.exists()) {
-            long total = rootFile.getTotalSpace();
-            long free = rootFile.getFreeSpace();
-            return (double) (total - free) / total;
-        }
-        throw new RuntimeException("wtf???");
+  public static double getDiskRatio() {
+    if (OSType.isLinux()) {
+      return getDiskRatio4Linux();
     }
+    throw new RuntimeException("不识别的操作系统类型");
+  }
 
-    /**
-     * 获取文件系统使用率
-     * Windows下分盘符，所以返回值是一个List
-     */
-    public static List<String> getDisk4Windows() {
-        // 操作系统
-        List<String> list = new ArrayList<String>();
-        for (char c = 'A'; c <= 'Z'; c++) {
-            String dirName = c + ":/";
-            File win = new File(dirName);
-            if (win.exists()) {
-                long total = (long) win.getTotalSpace();
-                long free = (long) win.getFreeSpace();
-                Double compare = (Double) (1 - free * 1.0 / total) * 100;
-                String str = c + ":盘  已使用 " + compare.intValue() + "%";
-                list.add(str);
-            }
-        }
-        return list;
+  /**
+   * TODO: 为什么和`df /`命令结果不一样？
+   */
+  public static double getDiskRatio4Linux() {
+    String rootName = "/";
+    File rootFile = new File(rootName);
+    if (rootFile.exists()) {
+      long total = rootFile.getTotalSpace();
+      long free = rootFile.getFreeSpace();
+      return (double) (total - free) / total;
     }
+    throw new RuntimeException("wtf???");
+  }
+
+  /**
+   * 获取文件系统使用率
+   * Windows下分盘符，所以返回值是一个List
+   * 讲道理这个统计没啥意义，除非偏要装到Windows上，而且需要指定装哪个盘上
+   */
+  public static List<String> getDisk4Windows() {
+    // 操作系统
+    List<String> list = new ArrayList<String>();
+    for (char c = 'A'; c <= 'Z'; c++) {
+      String dirName = c + ":/";
+      File win = new File(dirName);
+      if (win.exists()) {
+        long total = win.getTotalSpace();
+        long free = win.getFreeSpace();
+        Double compare = (1 - free * 1.0 / total) * 100;
+        String str = c + ":盘  已使用 " + compare.intValue() + "%";
+        list.add(str);
+      }
+    }
+    return list;
+  }
 
 }

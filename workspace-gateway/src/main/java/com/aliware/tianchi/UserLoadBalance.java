@@ -1,17 +1,26 @@
 package com.aliware.tianchi;
 
+import com.aliware.cluster.Cluster;
+import com.aliware.config.HostUtil;
+import com.aliware.tianchi.cluster.ClusterContext;
+import com.aliware.tianchi.cluster.SelectFuntion;
 import org.apache.dubbo.common.URL;
+import org.apache.dubbo.common.logger.Logger;
+import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.cluster.LoadBalance;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Function;
 
 /**
  * @author daofeng.xjf
- *
+ * <p>
  * 负载均衡扩展接口
  * 必选接口，核心接口
  * 此类可以修改实现，不可以移动类或者修改包名
@@ -19,9 +28,49 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class UserLoadBalance implements LoadBalance {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserLoadBalance.class);
+
+    /**
+     * 这个函数在上下文中的所有服务器中选出目标服务器（通过负载均衡算法）
+     */
+    private static final Function<Cluster, Byte> SELECT_FUNCTION = new SelectFuntion();
+
+    private Byte selectTargetHost() {
+        try {
+            return ClusterContext.compute(SELECT_FUNCTION);
+        } catch (ExecutionException e) {
+            throw new RpcException("选择目标服务器失败", e);
+        }
+    }
+
+    private boolean isContextEmpty() {
+        try {
+            return ClusterContext.getCluster().isEmpty();
+        } catch (ExecutionException e) {
+            throw new RpcException("这里都能失败？？？", e);
+        }
+    }
+
     @Override
     public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) throws RpcException {
-        这里通过负载均衡来选择一个provider地址
-        return invokers.get(ThreadLocalRandom.current().nextInt(invokers.size()));
+        if (isContextEmpty()) {
+            // 利用官方提供的默认随机算法兜底
+            return invokers.get(ThreadLocalRandom.current().nextInt(invokers.size()));
+        }
+        Byte targetHostCode = selectTargetHost();
+        Optional<Invoker<T>> target = invokers.stream()
+                .filter(invoker -> {
+                    // 调整主机名格式一致
+                    String hostName = invoker.getUrl().getHost();
+                    String adaptedHostName = HostUtil.adaptHost(hostName);
+                    // 转换成编码并与负载均衡结果比对
+                    return targetHostCode == HostUtil.getHostCodeByName(adaptedHostName);
+                })
+                .findFirst();
+        if (!target.isPresent()) {
+            // TODO: 容错
+            throw new RpcException("目标服务器不存在");
+        }
+        return target.get();
     }
 }
