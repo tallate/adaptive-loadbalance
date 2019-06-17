@@ -6,14 +6,6 @@ import com.aliware.config.HostUtil;
 import com.aliware.config.LoadConfig;
 import com.aliware.tianchi.cluster.ClusterContext;
 import com.aliware.tianchi.cluster.SelectFuntion;
-import org.apache.dubbo.common.URL;
-import org.apache.dubbo.common.logger.Logger;
-import org.apache.dubbo.common.logger.LoggerFactory;
-import org.apache.dubbo.rpc.Invocation;
-import org.apache.dubbo.rpc.Invoker;
-import org.apache.dubbo.rpc.RpcException;
-import org.apache.dubbo.rpc.cluster.LoadBalance;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -21,6 +13,13 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
+import org.apache.dubbo.common.URL;
+import org.apache.dubbo.common.logger.Logger;
+import org.apache.dubbo.common.logger.LoggerFactory;
+import org.apache.dubbo.rpc.Invocation;
+import org.apache.dubbo.rpc.Invoker;
+import org.apache.dubbo.rpc.RpcException;
+import org.apache.dubbo.rpc.cluster.LoadBalance;
 
 /**
  * @author daofeng.xjf
@@ -67,9 +66,8 @@ public class UserLoadBalance implements LoadBalance {
                 .filter(invoker -> {
                     // 调整主机名格式一致
                     String hostName = invoker.getUrl().getHost();
-                    String adaptedHostName = HostUtil.adaptHost(hostName);
                     // 转换成编码并与负载均衡结果比对
-                    return targetHostCode == HostUtil.getHostCodeByName(adaptedHostName);
+                    return targetHostCode == HostUtil.getHostCodeByName(hostName);
                 })
                 .findFirst();
         if (!target.isPresent()) {

@@ -28,6 +28,10 @@ public class HostUtil {
         HOST_CODE_MAP.put("medium", (byte) 2);
         HOST_CODE_MAP.put("large", (byte) 3);
 
+        HOST_CODE_MAP.put("provider-small", (byte) 1);
+        HOST_CODE_MAP.put("provider-medium", (byte) 2);
+        HOST_CODE_MAP.put("provider-large", (byte) 3);
+
         currentHostName = System.getProperty("quota");
         currentHostCode = HOST_CODE_MAP.get(currentHostName);
     }
@@ -55,17 +59,6 @@ public class HostUtil {
     public static byte getHostCodeByName(String hostName) {
         initHost();
         return HOST_CODE_MAP.get(hostName);
-    }
-
-    /**
-     * 调整主机名格式
-     */
-    public static String adaptHost(String host) {
-        Preconditions.checkArgument(!StringUtils.isBlank(host), "主机名不能为空");
-        if (host.startsWith("provider-")) {
-            return host.split("-")[1];
-        }
-        return host;
     }
 
 }

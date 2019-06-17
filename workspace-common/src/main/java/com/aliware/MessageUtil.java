@@ -1,6 +1,7 @@
 package com.aliware;
 
 import com.aliware.cluster.Server;
+import java.util.List;
 import org.apache.dubbo.common.utils.StringUtils;
 
 /**
@@ -36,6 +37,45 @@ public class MessageUtil {
                 .setMemoryLoad(memoryLoad)
                 .setNetworkLoad(networkLoad)
                 .setTime(time);
+    }
+
+    /**
+     * TODO: 加个Builder更正式，但是有点麻烦先放着吧
+     */
+    private static class MessageEncoder {
+
+        private static class MessageField {
+
+            private int length;
+
+        }
+
+        private static class FloatField {
+
+            private int integerPrecision;
+
+            private int decimalPrecision;
+
+        }
+
+        /**
+         * 消息中所有字段的定义
+         */
+        private List<MessageField> fields;
+
+        /**
+         * 所有字段的值
+         */
+        private List<Object> values;
+
+        public String encode() {
+            return "";
+        }
+
+        public long decodeLong(int pos) {
+            return 0;
+        }
+
     }
 
 }
