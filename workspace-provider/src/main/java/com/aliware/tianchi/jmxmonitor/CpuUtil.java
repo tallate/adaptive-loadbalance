@@ -1,11 +1,11 @@
 package com.aliware.tianchi.jmxmonitor;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
+import org.apache.dubbo.common.logger.Logger;
+import org.apache.dubbo.common.logger.LoggerFactory;
+
+import java.io.*;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
 import java.util.StringTokenizer;
 
 /**
@@ -19,26 +19,23 @@ import java.util.StringTokenizer;
  */
 public class CpuUtil {
 
+    private static Logger logger = LoggerFactory.getLogger(CpuUtil.class);
+
     private static final int CPUTIME = 500;
     private static final int PERCENT = 100;
     private static final int FAULTLENGTH = 10;
 
-
-    public static String getCpuRatio() throws IOException, InterruptedException {
-        if (OSType.isWindows()) {
-            return getCpuRatioForWindows();
-        } else if (OSType.isLinux()) {
-            return getCpuInfo();
+    public static double getCpuRatio() throws IOException, InterruptedException {
+        if (OSType.isLinux()) {
+            return getCpuRatio4Linux();
         }
-        return "";
+        throw new RuntimeException("不识别的操作系统类型");
     }
 
     /**
      * get memory by used info
-     *
-     * @return float efficiency
      */
-    public static String getCpuInfo() throws IOException, InterruptedException {
+    public static double getCpuRatio4Linux() throws IOException, InterruptedException {
         File file = new File("/proc/stat");
         BufferedReader br = new BufferedReader(new InputStreamReader(
                 new FileInputStream(file)));
@@ -49,6 +46,7 @@ public class CpuUtil {
         int sys1 = Integer.parseInt(token.nextToken());
         int idle1 = Integer.parseInt(token.nextToken());
 
+        // TODO: 这个采样有点生猛
         Thread.sleep(1000);
 
         br = new BufferedReader(
@@ -60,13 +58,13 @@ public class CpuUtil {
         int sys2 = Integer.parseInt(token.nextToken());
         int idle2 = Integer.parseInt(token.nextToken());
 
-        return "CPU: " + (float) ((user2 + sys2 + nice2) - (user1 + sys1 + nice1))
-                / (float) ((user2 + nice2 + sys2 + idle2) - (user1 + nice1
+        return (double) ((user2 + sys2 + nice2) - (user1 + sys1 + nice1))
+                / (double) ((user2 + nice2 + sys2 + idle2) - (user1 + nice1
                 + sys1 + idle1));
     }
 
     //获得cpu使用率
-    public static String getCpuRatioForWindows() {
+    public static double getCpuRatioForWindows() {
         try {
             String procCmd = System.getenv("windir") + "//system32//wbem//wmic.exe process get Caption,CommandLine,KernelModeTime,ReadOperationCount,ThreadCount,UserModeTime,WriteOperationCount";
             // 取进程信息
@@ -76,13 +74,13 @@ public class CpuUtil {
             if (c0 != null && c1 != null) {
                 long idletime = c1[0] - c0[0];
                 long busytime = c1[1] - c0[1];
-                return "CPU使用率:" + Double.valueOf(PERCENT * (busytime) * 1.0 / (busytime + idletime)).intValue() + "%";
+                return Double.valueOf(PERCENT * (busytime) * 1.0 / (busytime + idletime)).intValue();
             } else {
-                return "CPU使用率:" + 0 + "%";
+                return 0;
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return "CPU使用率:" + 0 + "%";
+        } catch (Exception e) {
+            logger.error("Windows CPU采样失败", e);
+            return 0;
         }
     }
 
@@ -153,9 +151,9 @@ public class CpuUtil {
     /**
      * 由于String.subString对汉字处理存在问题（把一个汉字视为一个字节)，因此在 包含汉字的字符串时存在隐患，现调整如下：
      *
-     * @param src 要截取的字符串
+     * @param src       要截取的字符串
      * @param start_idx 开始坐标（包括该坐标)
-     * @param end_idx 截止坐标（包括该坐标）
+     * @param end_idx   截止坐标（包括该坐标）
      */
     private static String substring(String src, int start_idx, int end_idx) {
         byte[] b = src.getBytes();

@@ -1,0 +1,25 @@
+hgc@hgc-X555LD:~/wkspce/tallate/tianchi/adaptive-loadbalance$ ./alb.sh press
+Running 1m test @ http://localhost:8087/invoke
+  4 threads and 1024 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    74.84ms   56.50ms 703.98ms   72.99%
+    Req/Sec     3.70k   825.83     5.77k    63.05%
+  Latency Distribution
+     50%   64.55ms
+     75%  101.97ms
+     90%  147.79ms
+     99%  262.53ms
+  883964 requests in 1.00m, 36.13MB read
+  Non-2xx or 3xx responses: 102638
+Requests/sec:  14714.70
+Transfer/sec:    615.86KB
+--------------------------
+Durations:       60.07s
+Requests:        883964
+Avg RT:          74.84ms
+Max RT:          703.983ms
+Min RT:          0.193ms
+Error requests:  102638
+Valid requests:  781326
+QPS:             13006.16
+--------------------------
