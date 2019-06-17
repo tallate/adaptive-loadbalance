@@ -7,7 +7,7 @@ import java.lang.management.OperatingSystemMXBean;
 public class SystemUtil {
 
     /**
-     * CPU功率
+     * CPU利用率
      */
     public static double getCpuRatio() throws IOException, InterruptedException {
         return CpuUtil.getCpuRatio();

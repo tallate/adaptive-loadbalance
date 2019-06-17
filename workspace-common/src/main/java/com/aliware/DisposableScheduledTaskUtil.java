@@ -57,6 +57,16 @@ public class DisposableScheduledTaskUtil {
         THREAD_POOL.submit(task);
     }
 
+    /**
+     * 延迟任务
+     */
+    public static void submitDelayTask(Runnable task, long start, TimeUnit timeUnit) {
+        THREAD_POOL.schedule(task, start, timeUnit);
+    }
+
+    /**
+     * 定时任务
+     */
     public static void scheduleAtFixedRate(Runnable task, long start, long interval, TimeUnit timeUnit) {
         THREAD_POOL.scheduleAtFixedRate(task, start, interval, timeUnit);
     }

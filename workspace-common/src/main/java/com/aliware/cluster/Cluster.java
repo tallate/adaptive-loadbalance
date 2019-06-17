@@ -3,6 +3,7 @@ package com.aliware.cluster;
 import org.apache.dubbo.common.utils.CollectionUtils;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Cluster implements Serializable {
@@ -10,7 +11,7 @@ public class Cluster implements Serializable {
     /**
      * 服务器对象<hostCode, Server>
      */
-    private Map<Byte, Server> serverMap;
+    private Map<Byte, Server> serverMap = new HashMap<>();
 
     /**
      * 平均负载

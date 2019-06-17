@@ -11,7 +11,7 @@ public class MessageUtil {
     /**
      * Server 转换成字符串后的长度
      */
-    private static final long SERVER_CONTENT_LENGTH = TypeUtil.BYTE_MAX_LENGTH * 5
+    private static final long SERVER_CONTENT_LENGTH = TypeUtil.BYTE_MAX_LENGTH * 4
             + TypeUtil.LONG_MAX_LENGTH;
 
     public static String encode(Server server) {

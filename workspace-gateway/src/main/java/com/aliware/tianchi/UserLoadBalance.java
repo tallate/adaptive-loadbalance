@@ -1,7 +1,9 @@
 package com.aliware.tianchi;
 
+import com.aliware.DisposableScheduledTaskUtil;
 import com.aliware.cluster.Cluster;
 import com.aliware.config.HostUtil;
+import com.aliware.config.LoadConfig;
 import com.aliware.tianchi.cluster.ClusterContext;
 import com.aliware.tianchi.cluster.SelectFuntion;
 import org.apache.dubbo.common.URL;
@@ -16,6 +18,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 /**
@@ -30,6 +34,14 @@ public class UserLoadBalance implements LoadBalance {
 
     private static final Logger logger = LoggerFactory.getLogger(UserLoadBalance.class);
 
+    private static final AtomicBoolean WARMUP = new AtomicBoolean(true);
+
+    static {
+        DisposableScheduledTaskUtil.submitDelayTask(() -> {
+            WARMUP.set(false);
+        }, LoadConfig.WARMUP_TIME, TimeUnit.MILLISECONDS);
+    }
+
     /**
      * 这个函数在上下文中的所有服务器中选出目标服务器（通过负载均衡算法）
      */
@@ -43,19 +55,12 @@ public class UserLoadBalance implements LoadBalance {
         }
     }
 
-    private boolean isContextEmpty() {
-        try {
-            return ClusterContext.getCluster().isEmpty();
-        } catch (ExecutionException e) {
-            throw new RpcException("这里都能失败？？？", e);
-        }
-    }
-
     @Override
     public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) throws RpcException {
-        if (isContextEmpty()) {
-            // 利用官方提供的默认随机算法兜底
-            return invokers.get(ThreadLocalRandom.current().nextInt(invokers.size()));
+        if (WARMUP.get()) {
+            // 利用官方提供的默认随机算法预热
+            int pos = ThreadLocalRandom.current().nextInt(invokers.size());
+            return invokers.get(pos);
         }
         Byte targetHostCode = selectTargetHost();
         Optional<Invoker<T>> target = invokers.stream()

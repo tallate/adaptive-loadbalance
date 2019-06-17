@@ -30,6 +30,7 @@ public class CallbackListenerImpl implements CallbackListener {
 
     @Override
     public void receiveServerMsg(String msg) {
+        logger.error(msg);
         // 解析
         Server server = decode(msg);
         // 添加到上下文
