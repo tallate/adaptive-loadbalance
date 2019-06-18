@@ -8,7 +8,6 @@ import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.rpc.listener.CallbackListener;
 import org.apache.dubbo.rpc.service.CallbackService;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -56,7 +55,7 @@ public class CallbackServiceImpl implements CallbackService {
         listeners.put(key, listener);
         String content = genContent();
         // 发送给 consumer
-        listener.receiveServerMsg(content); // send notification for change
+        listener.receiveServerMsg(content);
     }
 
     private String genContent() {
@@ -64,10 +63,10 @@ public class CallbackServiceImpl implements CallbackService {
         Server server = null;
         try {
             server = ServerGenerator.gen();
-        } catch (IOException | InterruptedException e) {
+        } catch (InterruptedException e) {
             logger.error("生成失败了，有没有搞错", e);
         }
         // 编码
-        return MessageUtil.encode(server);
+        return server == null ? null : MessageUtil.encode(server);
     }
 }

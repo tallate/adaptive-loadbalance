@@ -1,26 +1,36 @@
 package com.aliware.cluster;
 
+import com.aliware.CircularQueue;
+import com.aliware.config.SamplingConfig;
+import org.apache.dubbo.common.utils.CollectionUtils;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.dubbo.common.utils.CollectionUtils;
 
 public class Cluster implements Serializable {
 
     /**
-     * 服务器属性<hostCode, ServerParam>
+     * 记录每个
      */
-    private Map<Byte, ServerParam> serverParamMap = new HashMap<>();
+    private final Map<Byte, CircularQueue<Long>> circularQueueMap = new HashMap<>();
 
     /**
      * 服务器实时属性<hostCode, Server>
      */
-    private Map<Byte, Server> serverMap = new HashMap<>();
+    private final Map<Byte, Server> serverMap = new HashMap<>();
 
     /**
      * 平均负载
      */
     private double avgLoad;
+
+    public Cluster() {
+        // TODO: 初始化，这里硬编码了
+        circularQueueMap.put((byte) 1, new CircularQueue<>(SamplingConfig.MAX_THROUGHPUT));
+        circularQueueMap.put((byte) 2, new CircularQueue<>(SamplingConfig.MAX_THROUGHPUT));
+        circularQueueMap.put((byte) 3, new CircularQueue<>(SamplingConfig.MAX_THROUGHPUT));
+    }
 
     public Server getServer(Byte hostCode) {
         return serverMap.get(hostCode);
@@ -34,22 +44,16 @@ public class Cluster implements Serializable {
         return CollectionUtils.isEmptyMap(serverMap);
     }
 
-    public Map<Byte, ServerParam> getServerParamMap() {
-        return serverParamMap;
-    }
-
-    public Cluster setServerParamMap(Map<Byte, ServerParam> serverParamMap) {
-        this.serverParamMap = serverParamMap;
-        return this;
-    }
-
     public Map<Byte, Server> getServerMap() {
         return serverMap;
     }
 
-    public Cluster setServerMap(Map<Byte, Server> serverMap) {
-        this.serverMap = serverMap;
-        return this;
+    public Map<Byte, CircularQueue<Long>> getCircularQueueMap() {
+        return circularQueueMap;
+    }
+
+    public CircularQueue<Long> getCircularQueue(byte hostCode) {
+        return circularQueueMap.get(hostCode);
     }
 
     public double getAvgLoad() {

@@ -13,24 +13,9 @@ public class Server implements Serializable {
     private byte hostCode;
 
     /**
-     * cpu负载 = cpuLoad / 100.0
+     * 吞吐量
      */
-    private byte cpuLoad;
-
-    /**
-     * 内存负载
-     */
-    private byte memoryLoad;
-
-    /**
-     * 网络负载
-     */
-    private byte networkLoad;
-
-    /**
-     * 并发连接数Concurrent-Connection-Count
-     */
-    private long ccc;
+    private long throughput;
 
     /**
      * 负载
@@ -41,6 +26,15 @@ public class Server implements Serializable {
      * 快照生成时间
      */
     private long time;
+
+    public long getThroughput() {
+        return throughput;
+    }
+
+    public Server setThroughput(long throughput) {
+        this.throughput = throughput;
+        return this;
+    }
 
     public double getLoad() {
         return load;
@@ -60,42 +54,6 @@ public class Server implements Serializable {
         return this;
     }
 
-    public byte getCpuLoad() {
-        return cpuLoad;
-    }
-
-    public Server setCpuLoad(byte cpuLoad) {
-        this.cpuLoad = cpuLoad;
-        return this;
-    }
-
-    public byte getMemoryLoad() {
-        return memoryLoad;
-    }
-
-    public Server setMemoryLoad(byte memoryLoad) {
-        this.memoryLoad = memoryLoad;
-        return this;
-    }
-
-    public byte getNetworkLoad() {
-        return networkLoad;
-    }
-
-    public Server setNetworkLoad(byte networkLoad) {
-        this.networkLoad = networkLoad;
-        return this;
-    }
-
-    public long getCcc() {
-        return ccc;
-    }
-
-    public Server setCcc(long ccc) {
-        this.ccc = ccc;
-        return this;
-    }
-
     public long getTime() {
         return time;
     }
@@ -109,10 +67,7 @@ public class Server implements Serializable {
     public String toString() {
         return "Server{" +
                 "hostCode=" + hostCode +
-                ", cpuLoad=" + cpuLoad +
-                ", memoryLoad=" + memoryLoad +
-                ", networkLoad=" + networkLoad +
-                ", ccc=" + ccc +
+                ", load=" + load +
                 ", time=" + time +
                 '}';
     }

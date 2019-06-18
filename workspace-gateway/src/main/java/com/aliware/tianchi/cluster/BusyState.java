@@ -35,7 +35,8 @@ public class BusyState implements ClusterState {
         Map.Entry<Byte, Server>[] entries = entrySet
                 .toArray(new Map.Entry[0]);
         List<Double> weights = Arrays.stream(entries)
-                .map(entry -> entry.getValue().getLoad())
+                .map(entry -> entry.getValue().getLoad() == 0 ?
+                        0 : 1.0 / entry.getValue().getLoad())
                 .collect(Collectors.toList());
         int pos = RandomUtil.randOne(weights);
         return entries[pos].getValue();

@@ -21,6 +21,17 @@ public class PaddingUtil {
         BLANK_STR_LIST.add("      ");
         BLANK_STR_LIST.add("       ");
         BLANK_STR_LIST.add("        ");
+        BLANK_STR_LIST.add("         ");
+        BLANK_STR_LIST.add("          ");
+        BLANK_STR_LIST.add("           ");
+        BLANK_STR_LIST.add("            ");
+        BLANK_STR_LIST.add("             ");
+        BLANK_STR_LIST.add("              ");
+        BLANK_STR_LIST.add("               ");
+        BLANK_STR_LIST.add("                ");
+        BLANK_STR_LIST.add("                 ");
+        BLANK_STR_LIST.add("                  ");
+        BLANK_STR_LIST.add("                   ");
         // 暂时没有用到超过长度8的类型了
     }
 
