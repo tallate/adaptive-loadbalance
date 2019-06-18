@@ -1,7 +1,6 @@
 package com.aliware;
 
 /**
- *
  * @param <K> 表示 key 或 left 值
  * @param <V> 表示 value 或 right 值
  */

@@ -2,6 +2,7 @@ package com.aliware.tianchi.cluster;
 
 import com.aliware.cluster.Cluster;
 import com.aliware.cluster.Server;
+import com.aliware.cluster.ServerParam;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 
@@ -38,7 +39,12 @@ public class ClusterContext {
         // 计算平均负载
         double sumLoad = 0;
         for (Map.Entry<Byte, Server> entry : cluster.getServerMap().entrySet()) {
-            sumLoad += entry.getValue().getCpuLoad() / 100.0;
+            long ccc = entry.getValue().getCcc();
+            ServerParam serverParam = cluster.getServerParamMap().get(entry.getKey());
+            double load = ((double) ccc) / serverParam.getMccc();
+            // 更新单机负载
+            entry.getValue().setLoad(load);
+            sumLoad += load;
         }
         double avgLoad = sumLoad / cluster.getServerMap().size();
         logger.info("平均负载avgLoad：" + avgLoad);

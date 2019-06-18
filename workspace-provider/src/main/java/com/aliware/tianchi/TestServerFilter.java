@@ -1,5 +1,6 @@
 package com.aliware.tianchi;
 
+import com.aliware.tianchi.server.ServerContext;
 import org.apache.dubbo.common.Constants;
 import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.rpc.Filter;
@@ -20,10 +21,13 @@ public class TestServerFilter implements Filter {
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         try{
+            ServerContext.incr();
             Result result = invoker.invoke(invocation);
             return result;
         }catch (Exception e){
             throw e;
+        } finally {
+            ServerContext.decr();
         }
 
     }

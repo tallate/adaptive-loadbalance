@@ -2,7 +2,7 @@ package com.aliware.tianchi.server;
 
 import com.aliware.cluster.Server;
 import com.aliware.config.HostUtil;
-import com.aliware.tianchi.jmxmonitor.SystemUtil;
+import com.aliware.tianchi.monitor.SystemUtil;
 
 import java.io.IOException;
 
@@ -21,6 +21,7 @@ public class ServerGenerator {
                 .setCpuLoad(getOmittedLoad(SystemUtil.getCpuRatio()))
                 .setMemoryLoad(getOmittedLoad(SystemUtil.getMemoryRatio()))
                 .setNetworkLoad(getOmittedLoad(SystemUtil.getNetworkRatio()))
+                .setCcc(ServerContext.getCurrentCCC())
                 .setTime(System.currentTimeMillis());
     }
 

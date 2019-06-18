@@ -1,4 +1,4 @@
-package com.aliware.tianchi.jmxmonitor;
+package com.aliware.tianchi.monitor;
 
 import com.aliware.Pair;
 import com.aliware.Uninterruptibles;

@@ -13,7 +13,7 @@ public class MessageUtil {
      * Server 转换成字符串后的长度
      */
     private static final long SERVER_CONTENT_LENGTH = TypeUtil.BYTE_MAX_LENGTH * 4
-            + TypeUtil.LONG_MAX_LENGTH;
+            + TypeUtil.LONG_MAX_LENGTH * 2;
 
     public static String encode(Server server) {
         Preconditions.checkArgument(server != null, "server不能为空");
@@ -21,6 +21,7 @@ public class MessageUtil {
                 + PaddingUtil.padLeft2FixedLength("" + server.getCpuLoad(), TypeUtil.BYTE_MAX_LENGTH)
                 + PaddingUtil.padLeft2FixedLength("" + server.getMemoryLoad(), TypeUtil.BYTE_MAX_LENGTH)
                 + PaddingUtil.padLeft2FixedLength("" + server.getNetworkLoad(), TypeUtil.BYTE_MAX_LENGTH)
+                + PaddingUtil.padLeft2FixedLength("" + server.getCcc(), TypeUtil.LONG_MAX_LENGTH)
                 + PaddingUtil.padLeft2FixedLength("" + server.getTime(), TypeUtil.LONG_MAX_LENGTH);
     }
 
@@ -30,12 +31,14 @@ public class MessageUtil {
         byte cpuLoad = PaddingUtil.getByteFromPadded(content, TypeUtil.BYTE_MAX_LENGTH, TypeUtil.BYTE_MAX_LENGTH);
         byte memoryLoad = PaddingUtil.getByteFromPadded(content, TypeUtil.BYTE_MAX_LENGTH * 2, TypeUtil.BYTE_MAX_LENGTH);
         byte networkLoad = PaddingUtil.getByteFromPadded(content, TypeUtil.BYTE_MAX_LENGTH * 3, TypeUtil.BYTE_MAX_LENGTH);
-        long time = PaddingUtil.getLongFromPadded(content, TypeUtil.BYTE_MAX_LENGTH * 4, TypeUtil.LONG_MAX_LENGTH);
+        long ccc = PaddingUtil.getLongFromPadded(content, TypeUtil.BYTE_MAX_LENGTH * 4, TypeUtil.LONG_MAX_LENGTH);
+        long time = PaddingUtil.getLongFromPadded(content, TypeUtil.BYTE_MAX_LENGTH * 4 + TypeUtil.LONG_MAX_LENGTH, TypeUtil.LONG_MAX_LENGTH);
         return new Server()
                 .setHostCode(hostCode)
                 .setCpuLoad(cpuLoad)
                 .setMemoryLoad(memoryLoad)
                 .setNetworkLoad(networkLoad)
+                .setCcc(ccc)
                 .setTime(time);
     }
 

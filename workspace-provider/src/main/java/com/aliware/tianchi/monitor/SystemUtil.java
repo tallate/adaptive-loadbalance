@@ -1,4 +1,4 @@
-package com.aliware.tianchi.jmxmonitor;
+package com.aliware.tianchi.monitor;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;

@@ -1,11 +1,9 @@
-package com.aliware.tianchi.jmxmonitor;
+package com.aliware.tianchi.monitor;
 
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 
 import java.io.*;
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
 import java.util.StringTokenizer;
 
 /**

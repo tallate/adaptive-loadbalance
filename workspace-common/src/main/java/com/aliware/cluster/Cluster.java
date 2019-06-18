@@ -1,15 +1,19 @@
 package com.aliware.cluster;
 
-import org.apache.dubbo.common.utils.CollectionUtils;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.dubbo.common.utils.CollectionUtils;
 
 public class Cluster implements Serializable {
 
     /**
-     * 服务器对象<hostCode, Server>
+     * 服务器属性<hostCode, ServerParam>
+     */
+    private Map<Byte, ServerParam> serverParamMap = new HashMap<>();
+
+    /**
+     * 服务器实时属性<hostCode, Server>
      */
     private Map<Byte, Server> serverMap = new HashMap<>();
 
@@ -28,6 +32,15 @@ public class Cluster implements Serializable {
 
     public boolean isEmpty() {
         return CollectionUtils.isEmptyMap(serverMap);
+    }
+
+    public Map<Byte, ServerParam> getServerParamMap() {
+        return serverParamMap;
+    }
+
+    public Cluster setServerParamMap(Map<Byte, ServerParam> serverParamMap) {
+        this.serverParamMap = serverParamMap;
+        return this;
     }
 
     public Map<Byte, Server> getServerMap() {

@@ -2,6 +2,9 @@ package com.aliware.cluster;
 
 import java.io.Serializable;
 
+/**
+ * 服务器实时属性
+ */
 public class Server implements Serializable {
 
     /**
@@ -25,9 +28,28 @@ public class Server implements Serializable {
     private byte networkLoad;
 
     /**
+     * 并发连接数Concurrent-Connection-Count
+     */
+    private long ccc;
+
+    /**
+     * 负载
+     */
+    private double load;
+
+    /**
      * 快照生成时间
      */
     private long time;
+
+    public double getLoad() {
+        return load;
+    }
+
+    public Server setLoad(double load) {
+        this.load = load;
+        return this;
+    }
 
     public byte getHostCode() {
         return hostCode;
@@ -65,6 +87,15 @@ public class Server implements Serializable {
         return this;
     }
 
+    public long getCcc() {
+        return ccc;
+    }
+
+    public Server setCcc(long ccc) {
+        this.ccc = ccc;
+        return this;
+    }
+
     public long getTime() {
         return time;
     }
@@ -81,7 +112,9 @@ public class Server implements Serializable {
                 ", cpuLoad=" + cpuLoad +
                 ", memoryLoad=" + memoryLoad +
                 ", networkLoad=" + networkLoad +
+                ", ccc=" + ccc +
                 ", time=" + time +
                 '}';
     }
+
 }
