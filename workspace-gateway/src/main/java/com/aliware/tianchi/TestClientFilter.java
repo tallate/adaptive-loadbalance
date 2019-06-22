@@ -19,7 +19,7 @@ public class TestClientFilter implements Filter {
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         try {
             byte hostCode = HostUtil.getHostCodeByName(invoker.getUrl().getHost());
-            ClusterContext.pushReq(hostCode);
+            ClusterContext.countReq(hostCode);
             Result result = invoker.invoke(invocation);
             return result;
         } catch (Exception e) {

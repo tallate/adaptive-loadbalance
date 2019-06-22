@@ -1,6 +1,6 @@
 package com.aliware.tianchi;
 
-import com.aliware.MessageUtil;
+import com.aliware.cluster.MessageUtil;
 import com.aliware.cluster.Server;
 import com.aliware.tianchi.cluster.ClusterContext;
 import org.apache.dubbo.common.logger.Logger;

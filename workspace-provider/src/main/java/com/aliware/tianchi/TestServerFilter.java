@@ -22,7 +22,7 @@ public class TestServerFilter implements Filter {
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         try{
             // 计算吞吐量
-            ServerContext.pushReq();
+            ServerContext.countReq();
             Result result = invoker.invoke(invocation);
             return result;
         }catch (Exception e){

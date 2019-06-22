@@ -1,13 +1,12 @@
 package com.aliware.tianchi.cluster;
 
-import com.aliware.CircularQueue;
+import com.aliware.TimeUtil;
 import com.aliware.cluster.Cluster;
 import com.aliware.cluster.Server;
-import com.aliware.config.SamplingConfig;
+import com.aliware.counter.Counter;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 
-import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -46,11 +45,12 @@ public class ClusterContext {
         if (origin == null || server.getTime() > origin.getTime()) {
             cluster.putServer(server.getHostCode(), server);
         }
-        // 计算平均负载
+        // 计算平均负载，因为provider反馈的会有延迟、肯定比consumer端统计的要晚，所以以provider的采集时间为准
         double sumLoad = 0;
         for (Map.Entry<Byte, Server> entry : cluster.getServerMap().entrySet()) {
+            long collectTime = entry.getValue().getCollectTime();
             long throughput = entry.getValue().getThroughput();
-            long expectedThroughput = getExpectedThrouhput(entry.getKey());
+            long expectedThroughput = getExpectedThrouhput(entry.getKey(), collectTime);
             double load = ((double) expectedThroughput) / throughput;
             // 更新单机负载
             entry.getValue().setLoad(load);
@@ -65,19 +65,17 @@ public class ClusterContext {
     /**
      * 获取期望吞吐量(gateway发出的请求数)
      */
-    public static long getExpectedThrouhput(byte hostCode) {
-        CircularQueue<Long> circularQueue = cluster.getCircularQueue(hostCode);
-        int frontPos = circularQueue.getFrontPos();
-        int targetPos = circularQueue.binsearch(System.currentTimeMillis() - SamplingConfig.SAMPLING_TIME_INTERVAL,
-                Comparator.naturalOrder());
-        return circularQueue.getInterval(targetPos, frontPos);
+    public static long getExpectedThrouhput(byte hostCode, long collectTime) {
+        Counter<Long> counter = cluster.getServerCounterByHostCode(hostCode);
+        return counter.get(collectTime);
     }
 
     /**
      * 将请求压入队列
      */
-    public static void pushReq(byte hostCode) {
-        cluster.getCircularQueue(hostCode)
-                .offer(System.currentTimeMillis());
+    public static void countReq(byte hostCode) {
+        long currentSecond = TimeUtil.getCurrentSecond();
+        Counter<Long> counter = cluster.getServerCounterByHostCode(hostCode);
+        counter.incr(currentSecond);
     }
 }

@@ -1,4 +1,4 @@
-package com.aliware;
+package com.aliware.queue;
 
 import java.util.Comparator;
 
@@ -42,17 +42,19 @@ public class CircularQueue<T> {
     /**
      * 找>=key的左边界
      * 二分查找找下界（如1, 3, 3, 5, 8, 10会找到下标1处的3）
+     * TODO: 实现一个支持高并发的队列中的二分查找、又要考虑性能，似乎不大现实
      */
     private int findLb(T[] a, int lb, int rb, T key, Comparator<T> com) {
-        while (lb < rb) {
-            int mid = (lb + rb) / 2;
-            if (a[mid] >= key) {
-                rb = mid;
-            } else {
-                lb = mid + 1;
-            }
-        }
         return lb;
+        // while (lb < rb) {
+        //     int mid = (lb + rb) / 2;
+        //     if (a[mid] >= key) {
+        //         rb = mid;
+        //     } else {
+        //         lb = mid + 1;
+        //     }
+        // }
+        // return lb;
     }
 
     /**
@@ -66,7 +68,7 @@ public class CircularQueue<T> {
     }
 
     public int mid(int pos1, int pos2) {
-
+        return (pos1 + queue.length - pos2) % queue.length;
     }
 
     public int getFrontPos() {
