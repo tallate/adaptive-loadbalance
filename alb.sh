@@ -63,8 +63,12 @@ elif [ $1 = 'press-1' ]; then
 elif [ $1 = 'press-2' ]; then
     # pressure test
     cd ${ROOT_DIR}/localtest
+    wrk -t4 -c1536 -d60s -T5 --script=./wrk.lua --latency http://localhost:8087/invoke
+elif [ $1 = 'press-3' ]; then
+    # pressure test
+    cd ${ROOT_DIR}/localtest
     wrk -t8 -c4096 -d60s -T5 --script=./wrk.lua --latency http://localhost:8087/invoke
-elif []; then
+else
     echo "不支持的命令:"$1", 具体格式见脚本"
 fi
 

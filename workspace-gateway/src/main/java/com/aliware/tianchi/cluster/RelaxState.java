@@ -7,18 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.aliware.config.LoadConfig.LOAD_THRESHOLD;
 import static com.aliware.config.LoadConfig.getHostFactor;
 
 /**
  * 集群平均负载较低的状态
- * 1. 随机算法
+ * 1. 加权随机
+ * 2. 必须放到最后
  */
 public class RelaxState implements ClusterState {
 
     @Override
     public boolean match(Cluster cluster) {
-        return cluster.getAvgLoad() - 1 < LOAD_THRESHOLD;
+        return true;
     }
 
     private static final List<Double> WEIGHTS = new ArrayList<>();

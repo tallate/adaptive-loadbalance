@@ -6,8 +6,6 @@ import com.aliware.cluster.Cluster;
 import com.aliware.cluster.Server;
 import com.aliware.counter.Counter;
 import com.aliware.log.LogUtil;
-import org.apache.dubbo.common.logger.Logger;
-import org.apache.dubbo.common.logger.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;

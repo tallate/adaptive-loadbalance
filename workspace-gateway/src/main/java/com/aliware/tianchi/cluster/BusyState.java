@@ -25,7 +25,8 @@ public class BusyState implements ClusterState {
     @Override
     public boolean match(Cluster cluster) {
         // 超出
-        return cluster.getAvgLoad() - 1 >= LOAD_THRESHOLD;
+        return cluster.getServersAsList().stream()
+                .anyMatch(server -> server.getLoad() - 1 >= LOAD_THRESHOLD);
     }
 
     /**

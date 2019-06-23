@@ -1,11 +1,15 @@
 package com.aliware.tianchi;
 
+import com.aliware.DisposableScheduledTaskUtil;
+import com.aliware.TimeUtil;
+import com.aliware.config.LogConfig;
+import com.aliware.log.LogUtil;
 import com.aliware.tianchi.server.ServerContext;
 import org.apache.dubbo.common.Constants;
 import org.apache.dubbo.common.extension.Activate;
-import org.apache.dubbo.common.logger.Logger;
-import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.rpc.*;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author daofeng.xjf
@@ -19,10 +23,12 @@ public class TestServerFilter implements Filter {
 
     {
         // LOG: 加一个线程用于记录每秒接收到的请求数
-        // DisposableScheduledTaskUtil.scheduleAtFixedRate(() -> {
-        //     long lastSecond = TimeUtil.getLastSecond();
-        //     LogUtil.info("时间=" + lastSecond + " 请求数=" + ServerContext.getReqCount(lastSecond));
-        // }, 1, 1, TimeUnit.SECONDS);
+        if (LogConfig.INFO_ENABLED) {
+            DisposableScheduledTaskUtil.scheduleAtFixedRate(() -> {
+                long lastSecond = TimeUtil.getLastSecond();
+                LogUtil.info("时间=" + lastSecond + " 请求数=" + ServerContext.getReqCount(lastSecond));
+            }, 1, 1, TimeUnit.SECONDS);
+        }
     }
 
     @Override
