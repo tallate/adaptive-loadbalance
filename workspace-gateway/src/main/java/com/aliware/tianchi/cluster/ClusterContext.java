@@ -70,8 +70,7 @@ public class ClusterContext {
             sumLoad += load;
             // 更新权重（影响负载均衡）
             double loadOffset = Math.abs(load - 1);
-            if (loadOffset > LOAD_THRESHOLD_LOW_BOUND
-                    && loadOffset < LOAD_THRESHOLD_UP_BOUND) {
+            if (loadOffset < LOAD_THRESHOLD_UP_BOUND) {
                 s.setWeight(s.getWeight() / load);
             }
             weights[(int) hostCode - 1] = s.getWeight();
