@@ -4,11 +4,8 @@ import com.aliware.IntervalSelector;
 import com.aliware.RandomUtil;
 import com.aliware.cluster.Cluster;
 import com.aliware.cluster.Server;
-import com.aliware.config.HostUtil;
 import com.aliware.config.LoadConfig;
 import com.aliware.log.LogUtil;
-import org.apache.dubbo.common.logger.Logger;
-import org.apache.dubbo.common.logger.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +31,7 @@ public class BusyState implements ClusterState {
     /**
      * 为了让超出阈值的负载在负载均衡时更明显，将这些负载扩大
      */
-    private double extendLoad(double load) {
+    private double boostLoad(double load) {
         return load <= 1 ?
                 load :
                 1 + (load - 1) * EXTEND_FACTOR;
@@ -51,8 +48,8 @@ public class BusyState implements ClusterState {
         // 通过每个服务器负载计算出负载时的权重
         List<Double> weights = Arrays.stream(entries)
                 .map(entry -> {
-                    // 大部分情况下过载在数值上不会特别明显，extend过程扩大了这部分的影响
-                    double load = extendLoad(entry.getValue().getLoad());
+                    // 大部分情况下过载在数值上不会特别明显，boost过程扩大了这部分的影响
+                    double load = boostLoad(entry.getValue().getLoad());
                     double loadFactor = entry.getValue().getLoad() == 0 ?
                             1 :
                             1.0 / load;
