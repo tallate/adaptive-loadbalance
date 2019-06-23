@@ -10,7 +10,7 @@ public class LogConfig {
 
     public static final boolean WARN_ENABLED = false;
 
-    public static final boolean ERROR_ENABLED = false;
+    public static final boolean ERROR_ENABLED = true;
 
 
 }
