@@ -4,7 +4,9 @@ import com.aliware.counter.Counter;
 import org.apache.dubbo.common.utils.CollectionUtils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Cluster implements Serializable {
@@ -20,14 +22,25 @@ public class Cluster implements Serializable {
     private final Map<Byte, Server> serverMap = new HashMap<>();
 
     /**
+     * 按code进行排序
+     */
+    private final List<Server> servers = new ArrayList<>();
+
+    /**
      * 平均负载
      */
     private double avgLoad;
 
     public Cluster() {
-        serverMap.put((byte) 1, new Server((byte) 1));
-        serverMap.put((byte) 2, new Server((byte) 2));
-        serverMap.put((byte) 3, new Server((byte) 3));
+        Server small = new Server((byte) 1);
+        Server medium = new Server((byte) 2);
+        Server large = new Server((byte) 3);
+        serverMap.put((byte) 1, small);
+        serverMap.put((byte) 2, medium);
+        serverMap.put((byte) 3, large);
+        servers.add(small);
+        servers.add(medium);
+        servers.add(large);
         serverCounterMap.put((byte) 1, new Counter<>());
         serverCounterMap.put((byte) 2, new Counter<>());
         serverCounterMap.put((byte) 3, new Counter<>());
@@ -53,6 +66,10 @@ public class Cluster implements Serializable {
         return serverMap;
     }
 
+    public List<Server> getServersAsList() {
+        return servers;
+    }
+
     public double getAvgLoad() {
         return avgLoad;
     }
@@ -61,4 +78,5 @@ public class Cluster implements Serializable {
         this.avgLoad = avgLoad;
         return this;
     }
+
 }

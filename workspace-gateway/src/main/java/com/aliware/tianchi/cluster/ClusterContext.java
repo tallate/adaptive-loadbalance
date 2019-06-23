@@ -27,9 +27,9 @@ public class ClusterContext {
      * TODO: 改成无锁的
      */
     public static <T> T compute(Function<Cluster, T> function) throws ExecutionException {
-        LOCK.readLock().lock();
+        // LOCK.readLock().lock();
         T result = function.apply(cluster);
-        LOCK.readLock().unlock();
+        // LOCK.readLock().unlock();
         return result;
     }
 
@@ -38,7 +38,7 @@ public class ClusterContext {
      * TODO: 改成无锁的
      */
     public static void putServer(Server server) throws ExecutionException {
-        LOCK.writeLock().lock();
+        // LOCK.writeLock().lock();
         // 将server添加到上下文
         Server origin = cluster.getServer(server.getHostCode());
         // 取最后一次发出时的属性
@@ -55,6 +55,7 @@ public class ClusterContext {
         long[] expects = new long[3];
         long[] exacts = new long[3];
         for (Map.Entry<Byte, Server> entry : cluster.getServerMap().entrySet()) {
+            byte hostCode = entry.getKey();
             long collectTime = entry.getValue().getCollectTime();
             long exactThroughput = entry.getValue().getThroughput();
             long expectThroughput = getExpectThrouhput(entry.getKey(), collectTime);
@@ -64,9 +65,9 @@ public class ClusterContext {
             // 更新单机负载
             entry.getValue().setLoad(load);
             sumLoad += load;
-            expects[(int) entry.getKey() - 1] = expectThroughput;
-            exacts[(int) entry.getKey() - 1] = exactThroughput;
-            loads[(int) entry.getKey() - 1] = load;
+            expects[(int) hostCode - 1] = expectThroughput;
+            exacts[(int) hostCode - 1] = exactThroughput;
+            loads[(int) hostCode - 1] = load;
         }
         double avgLoad = sumLoad / cluster.getServerMap().size();
         // LOG: 统计平均负载计算过程
@@ -78,7 +79,7 @@ public class ClusterContext {
                 + " exacts=[" + exacts[0] + ", "
                 + exacts[1] + ", " + exacts[2] + "]");
         cluster.setAvgLoad(avgLoad);
-        LOCK.writeLock().unlock();
+        // LOCK.writeLock().unlock();
     }
 
     /**

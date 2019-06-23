@@ -46,13 +46,13 @@ public class UserLoadBalance implements LoadBalance {
         }
     }
 
-    private static final IntervalSelector intervalSelector = new IntervalSelector(10, true);
+    private static final IntervalSelector INTERVAL_SELECTOR = new IntervalSelector(10, true);
 
     @Override
     public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) throws RpcException {
         Byte targetHostCode = selectTargetHost();
         // LOG: 记录负载均衡算法选中的是哪台
-        // if (intervalSelector.get()) {
+        // if (INTERVAL_SELECTOR.get()) {
         //     LogUtil.info("选中目标服务器=" + targetHostCode);
         // }
         Optional<Invoker<T>> target = invokers.stream()
