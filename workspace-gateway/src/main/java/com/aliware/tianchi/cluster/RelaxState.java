@@ -21,13 +21,14 @@ public class RelaxState implements ClusterState {
 
     @Override
     public boolean match(Cluster cluster) {
-        return cluster.getAvgLoad() < LOAD_THRESHOLD;
+        return cluster.getAvgLoad() - 1 < LOAD_THRESHOLD;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Server select(Cluster cluster) {
-        logger.info("RelaxState selected");
+        // LOG: 记录算法切换过程
+        // logger.info("RelaxState selected");
         Set<Map.Entry<Byte, Server>> entrySet = cluster.getServerMap().entrySet();
         Map.Entry<Byte, Server>[] entries = entrySet
                 .toArray(new Map.Entry[0]);

@@ -6,13 +6,6 @@ import com.aliware.config.HostUtil;
 import com.aliware.config.LoadConfig;
 import com.aliware.tianchi.cluster.ClusterContext;
 import com.aliware.tianchi.cluster.SelectFuntion;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
@@ -20,6 +13,14 @@ import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.cluster.LoadBalance;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 /**
  * @author daofeng.xjf
@@ -36,9 +37,9 @@ public class UserLoadBalance implements LoadBalance {
     private static final AtomicBoolean WARMUP = new AtomicBoolean(true);
 
     static {
-        DisposableScheduledTaskUtil.submitDelayTask(() -> {
-            WARMUP.set(false);
-        }, LoadConfig.WARMUP_TIME, TimeUnit.MILLISECONDS);
+        DisposableScheduledTaskUtil.submitDelayTask(
+                () -> WARMUP.set(false),
+                LoadConfig.WARMUP_TIME, TimeUnit.MILLISECONDS);
     }
 
     /**

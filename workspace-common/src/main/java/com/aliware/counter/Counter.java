@@ -20,10 +20,11 @@ public class Counter<T> {
         }
     }
 
-    public long get(T t) {
+    public long getOrDefault(T t, Long d) {
         AtomicLong counter = counterMap.get(t);
-        return counter == null
-                ? 0 : counter.get();
+        return counter == null ?
+                (d == null ? 0 : d) :
+                counter.get();
     }
 
 }
