@@ -33,14 +33,6 @@ import java.util.function.Function;
  */
 public class UserLoadBalance implements LoadBalance {
 
-    private static final AtomicBoolean WARMUP = new AtomicBoolean(true);
-
-    static {
-        DisposableScheduledTaskUtil.submitDelayTask(
-                () -> WARMUP.set(false),
-                LoadConfig.WARMUP_TIME, TimeUnit.MILLISECONDS);
-    }
-
     /**
      * 这个函数在上下文中的所有服务器中选出目标服务器（通过负载均衡算法）
      */
@@ -58,11 +50,6 @@ public class UserLoadBalance implements LoadBalance {
 
     @Override
     public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) throws RpcException {
-        if (WARMUP.get()) {
-            // 利用官方提供的默认随机算法预热
-            int pos = ThreadLocalRandom.current().nextInt(invokers.size());
-            return invokers.get(pos);
-        }
         Byte targetHostCode = selectTargetHost();
         // LOG: 记录负载均衡算法选中的是哪台
         // if (intervalSelector.get()) {
