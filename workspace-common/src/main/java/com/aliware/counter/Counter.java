@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
+ * 计数器
  */
 public class Counter<T> {
 

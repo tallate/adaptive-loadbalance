@@ -10,8 +10,7 @@ public class ServerGenerator {
 
     public static Server gen() throws InterruptedException {
         long lastSecond = TimeUtil.getLastSecond();
-        return new Server()
-                .setHostCode(HostUtil.getCurrentHostCode())
+        return new Server(HostUtil.getCurrentHostCode())
                 .setCollectTime(lastSecond)
                 .setThroughput(ServerContext.getReqCount(lastSecond))
                 .setTime(TimeUtil.getCurrentMillis());

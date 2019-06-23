@@ -33,8 +33,7 @@ public class MessageUtil {
         long collectTime = PaddingUtil.getLongFromPadded(content, TypeUtil.BYTE_MAX_LENGTH, TypeUtil.LONG_MAX_LENGTH);
         long throughput = PaddingUtil.getLongFromPadded(content, TypeUtil.BYTE_MAX_LENGTH + TypeUtil.LONG_MAX_LENGTH, TypeUtil.LONG_MAX_LENGTH);
         long time = PaddingUtil.getLongFromPadded(content, TypeUtil.BYTE_MAX_LENGTH + TypeUtil.LONG_MAX_LENGTH * 2, TypeUtil.LONG_MAX_LENGTH);
-        return new Server()
-                .setHostCode(hostCode)
+        return new Server(hostCode)
                 .setCollectTime(collectTime)
                 .setThroughput(throughput)
                 .setTime(time);

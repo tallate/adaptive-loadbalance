@@ -27,8 +27,6 @@ public class RelaxState implements ClusterState {
     @SuppressWarnings("unchecked")
     @Override
     public Server select(Cluster cluster) {
-        // LOG: 记录算法切换过程
-        // logger.info("RelaxState selected");
         Set<Map.Entry<Byte, Server>> entrySet = cluster.getServerMap().entrySet();
         Map.Entry<Byte, Server>[] entries = entrySet
                 .toArray(new Map.Entry[0]);

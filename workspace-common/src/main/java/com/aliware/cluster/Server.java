@@ -32,6 +32,10 @@ public class Server implements Serializable {
      */
     private double load;
 
+    public Server(byte hostCode) {
+        this.hostCode = hostCode;
+    }
+
     public long getCollectTime() {
         return collectTime;
     }

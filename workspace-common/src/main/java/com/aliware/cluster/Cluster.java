@@ -25,9 +25,9 @@ public class Cluster implements Serializable {
     private double avgLoad;
 
     public Cluster() {
-        serverMap.put((byte) 1, new Server());
-        serverMap.put((byte) 2, new Server());
-        serverMap.put((byte) 3, new Server());
+        serverMap.put((byte) 1, new Server((byte) 1));
+        serverMap.put((byte) 2, new Server((byte) 2));
+        serverMap.put((byte) 3, new Server((byte) 3));
         serverCounterMap.put((byte) 1, new Counter<>());
         serverCounterMap.put((byte) 2, new Counter<>());
         serverCounterMap.put((byte) 3, new Counter<>());

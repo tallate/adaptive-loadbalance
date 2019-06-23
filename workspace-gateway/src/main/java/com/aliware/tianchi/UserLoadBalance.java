@@ -1,6 +1,7 @@
 package com.aliware.tianchi;
 
 import com.aliware.DisposableScheduledTaskUtil;
+import com.aliware.IntervalSelector;
 import com.aliware.cluster.Cluster;
 import com.aliware.config.HostUtil;
 import com.aliware.config.LoadConfig;
@@ -55,6 +56,8 @@ public class UserLoadBalance implements LoadBalance {
         }
     }
 
+    private static final IntervalSelector intervalSelector = new IntervalSelector(10, true);
+
     @Override
     public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) throws RpcException {
         if (WARMUP.get()) {
@@ -63,6 +66,10 @@ public class UserLoadBalance implements LoadBalance {
             return invokers.get(pos);
         }
         Byte targetHostCode = selectTargetHost();
+        // LOG: 记录负载均衡算法选中的是哪台
+        // if (intervalSelector.get()) {
+        //     logger.info("选中目标服务器=" + targetHostCode);
+        // }
         Optional<Invoker<T>> target = invokers.stream()
                 .filter(invoker -> {
                     // 调整主机名格式一致

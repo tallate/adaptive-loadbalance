@@ -7,7 +7,7 @@ public class LoadConfig {
     /**
      * 预热时间 / ms
      */
-    public static final int WARMUP_TIME = 25 * 1000;
+    public static final int WARMUP_TIME = 10 * 1000;
 
     /**
      * 负载均衡算法切换阈值

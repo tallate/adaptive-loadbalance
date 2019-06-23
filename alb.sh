@@ -16,6 +16,8 @@ elif [ $1 = 'stop-0' ]; then
     docker rm provider-default-medium
     docker stop provider-default-small
     docker rm provider-default-small
+    docker image rm consumer-default
+    docker image rm provider-default
 elif [ $1 = 'run-0' ]; then
     # 本地 Docker 跑官方版本
     cd ${ROOT_DIR}/localtest/debian-jdk8-adaptive-loadbalance/debian-jdk8-provider
@@ -35,6 +37,8 @@ elif [ $1 = 'stop-1' ]; then
     docker rm provider-medium
     docker stop provider-small
     docker rm provider-small
+    docker image rm provider
+    docker image rm consumer
 elif [ $1 = 'run-1' ]; then
     # 本地 Docker 跑一个
     # 构建最新的provider

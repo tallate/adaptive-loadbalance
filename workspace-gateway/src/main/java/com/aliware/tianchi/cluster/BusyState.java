@@ -1,5 +1,6 @@
 package com.aliware.tianchi.cluster;
 
+import com.aliware.IntervalSelector;
 import com.aliware.RandomUtil;
 import com.aliware.cluster.Cluster;
 import com.aliware.cluster.Server;
@@ -38,11 +39,11 @@ public class BusyState implements ClusterState {
                 1 + (load - 1) * EXTEND_FACTOR;
     }
 
+    private IntervalSelector intervalSelector = new IntervalSelector(10, true);
+
     @SuppressWarnings("unchecked")
     @Override
     public Server select(Cluster cluster) {
-        // LOG: 记录算法切换过程
-        // logger.info("BusyState selected");
         Set<Map.Entry<Byte, Server>> entrySet = cluster.getServerMap().entrySet();
         Map.Entry<Byte, Server>[] entries = entrySet
                 .toArray(new Map.Entry[0]);
@@ -56,6 +57,10 @@ public class BusyState implements ClusterState {
                             1.0 / load;
                 })
                 .collect(Collectors.toList());
+        // LOG: 记录所有计算出的权重
+        if (intervalSelector.get()) {
+            logger.info("所有权重=[" + weights.get(0) + ", " + weights.get(1) + ", " + weights.get(2) + "" + "]");
+        }
         // 计算赋权随机数
         int pos = RandomUtil.randOne(weights);
         return entries[pos].getValue();
