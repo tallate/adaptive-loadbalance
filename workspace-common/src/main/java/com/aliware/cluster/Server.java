@@ -28,12 +28,26 @@ public class Server implements Serializable {
     private long time;
 
     /**
-     * 负载（consumer算出）
+     * 负载（consumer动态计算）
      */
     private double load;
 
+    /**
+     * 权重，根据负载情况动态更新（consumer端动态更新）
+     */
+    private double weight;
+
     public Server(byte hostCode) {
         this.hostCode = hostCode;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public Server setWeight(double weight) {
+        this.weight = weight;
+        return this;
     }
 
     public long getCollectTime() {
@@ -85,8 +99,10 @@ public class Server implements Serializable {
     public String toString() {
         return "Server{" +
                 "hostCode=" + hostCode +
-                ", load=" + load +
+                ", collectTime=" + collectTime +
+                ", throughput=" + throughput +
                 ", time=" + time +
+                ", load=" + load +
                 '}';
     }
 

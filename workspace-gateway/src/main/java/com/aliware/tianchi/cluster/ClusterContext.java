@@ -12,6 +12,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
 
+import static com.aliware.config.LoadConfig.LOAD_THRESHOLD_LOW_BOUND;
+import static com.aliware.config.LoadConfig.LOAD_THRESHOLD_UP_BOUND;
+
 /**
  */
 public class ClusterContext {
@@ -49,23 +52,32 @@ public class ClusterContext {
         }
         // 计算平均负载，因为provider反馈的会有延迟、肯定比consumer端统计的要晚，所以以provider的采集时间为准
         double sumLoad = 0;
+        double[] weights = new double[3];
         double[] loads = new double[3];
         long[] expects = new long[3];
         long[] exacts = new long[3];
         for (Map.Entry<Byte, Server> entry : cluster.getServerMap().entrySet()) {
             byte hostCode = entry.getKey();
-            long collectTime = entry.getValue().getCollectTime();
-            long exactThroughput = entry.getValue().getThroughput();
+            Server s = entry.getValue();
+            long collectTime = s.getCollectTime();
+            long exactThroughput = s.getThroughput();
             long expectThroughput = getExpectThrouhput(entry.getKey(), collectTime);
+            // 计算单机负载
             double load = expectThroughput == 0 || exactThroughput == 0 ?
                     1 :
                     ((double) expectThroughput) / exactThroughput;
-            // 更新单机负载
-            entry.getValue().setLoad(load);
+            s.setLoad(load);
             sumLoad += load;
+            // 更新权重（影响负载均衡）
+            double loadOffset = Math.abs(load - 1);
+            if (loadOffset > LOAD_THRESHOLD_LOW_BOUND
+                    && loadOffset < LOAD_THRESHOLD_UP_BOUND) {
+                s.setWeight(s.getWeight() / load);
+            }
+            weights[(int) hostCode - 1] = s.getWeight();
+            loads[(int) hostCode - 1] = load;
             expects[(int) hostCode - 1] = expectThroughput;
             exacts[(int) hostCode - 1] = exactThroughput;
-            loads[(int) hostCode - 1] = load;
         }
         double avgLoad = sumLoad / cluster.getServerMap().size();
         // LOG: 统计平均负载计算过程
@@ -77,6 +89,8 @@ public class ClusterContext {
                 + " exacts=[" + exacts[0] + ", "
                 + exacts[1] + ", " + exacts[2] + "]");
         cluster.setAvgLoad(avgLoad);
+        // LOG: 记录权重
+        LogUtil.error("权重weights=[" + weights[0] + ", " + weights[1] + ", " + weights[2] + "]");
         // LOCK.writeLock().unlock();
     }
 

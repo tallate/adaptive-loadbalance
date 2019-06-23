@@ -32,9 +32,10 @@ public class Cluster implements Serializable {
     private double avgLoad;
 
     public Cluster() {
-        Server small = new Server((byte) 1);
-        Server medium = new Server((byte) 2);
-        Server large = new Server((byte) 3);
+        // 初始化所有服务器，并给一个初始权重
+        Server small = new Server((byte) 1).setWeight(1);
+        Server medium = new Server((byte) 2).setWeight(2);
+        Server large = new Server((byte) 3).setWeight(3);
         serverMap.put((byte) 1, small);
         serverMap.put((byte) 2, medium);
         serverMap.put((byte) 3, large);

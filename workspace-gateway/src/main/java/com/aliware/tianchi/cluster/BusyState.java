@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.aliware.config.LoadConfig.BOOST_FACTOR;
-import static com.aliware.config.LoadConfig.LOAD_THRESHOLD;
 
 /**
  * 集群为繁忙状态
@@ -24,9 +23,10 @@ public class BusyState implements ClusterState {
 
     @Override
     public boolean match(Cluster cluster) {
+        return false;
         // 超出
-        return cluster.getServersAsList().stream()
-                .anyMatch(server -> server.getLoad() - 1 >= LOAD_THRESHOLD);
+        // return cluster.getServersAsList().stream()
+        //         .anyMatch(server -> server.getLoad() - 1 >= LOAD_THRESHOLD_LOW_BOUND);
     }
 
     /**
