@@ -31,14 +31,14 @@ public class CallbackListenerImpl implements CallbackListener {
     @Override
     public void receiveServerMsg(String msg) {
         // LOG: 记录每次从provider上传的消息
-        // logger.info(msg);
+        // LogUtil.info(msg);
         // 解析
         Server server = decode(msg);
         // 添加到上下文
         try {
             ClusterContext.putServer(server);
         } catch (ExecutionException e) {
-            logger.error("更新失败，放弃这次更新", e);
+            logger.error("更新失败，直接放弃这次更新", e);
         }
     }
 

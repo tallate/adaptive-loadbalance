@@ -33,8 +33,6 @@ import java.util.function.Function;
  */
 public class UserLoadBalance implements LoadBalance {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserLoadBalance.class);
-
     private static final AtomicBoolean WARMUP = new AtomicBoolean(true);
 
     static {
@@ -68,7 +66,7 @@ public class UserLoadBalance implements LoadBalance {
         Byte targetHostCode = selectTargetHost();
         // LOG: 记录负载均衡算法选中的是哪台
         // if (intervalSelector.get()) {
-        //     logger.info("选中目标服务器=" + targetHostCode);
+        //     LogUtil.info("选中目标服务器=" + targetHostCode);
         // }
         Optional<Invoker<T>> target = invokers.stream()
                 .filter(invoker -> {

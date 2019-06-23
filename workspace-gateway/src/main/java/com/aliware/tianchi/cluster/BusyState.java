@@ -4,6 +4,7 @@ import com.aliware.IntervalSelector;
 import com.aliware.RandomUtil;
 import com.aliware.cluster.Cluster;
 import com.aliware.cluster.Server;
+import com.aliware.log.LogUtil;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 
@@ -21,8 +22,6 @@ import static com.aliware.config.LoadConfig.LOAD_THRESHOLD;
  * 1. 按每个服务器的负载比率分配请求
  */
 public class BusyState implements ClusterState {
-
-    private static final Logger logger = LoggerFactory.getLogger(BusyState.class);
 
     @Override
     public boolean match(Cluster cluster) {
@@ -59,7 +58,7 @@ public class BusyState implements ClusterState {
                 .collect(Collectors.toList());
         // LOG: 记录所有计算出的权重
         if (intervalSelector.get()) {
-            logger.info("所有权重=[" + weights.get(0) + ", " + weights.get(1) + ", " + weights.get(2) + "" + "]");
+            LogUtil.info("所有权重=[" + weights.get(0) + ", " + weights.get(1) + ", " + weights.get(2) + "" + "]");
         }
         // 计算赋权随机数
         int pos = RandomUtil.randOne(weights);

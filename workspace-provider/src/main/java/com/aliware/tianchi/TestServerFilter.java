@@ -17,13 +17,11 @@ import org.apache.dubbo.rpc.*;
 @Activate(group = Constants.PROVIDER)
 public class TestServerFilter implements Filter {
 
-    private Logger logger = LoggerFactory.getLogger(TestServerFilter.class);
-
     {
         // LOG: 加一个线程用于记录每秒接收到的请求数
         // DisposableScheduledTaskUtil.scheduleAtFixedRate(() -> {
         //     long lastSecond = TimeUtil.getLastSecond();
-        //     logger.info("时间=" + lastSecond + " 请求数=" + ServerContext.getReqCount(lastSecond));
+        //     LogUtil.info("时间=" + lastSecond + " 请求数=" + ServerContext.getReqCount(lastSecond));
         // }, 1, 1, TimeUnit.SECONDS);
     }
 

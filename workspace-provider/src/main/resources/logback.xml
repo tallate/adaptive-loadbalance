@@ -58,7 +58,7 @@
     </logger>
 
     <!-- root的默认level是INFO -->
-    <root level="INFO">
+    <root level="ERROR">
         <appender-ref ref="STDOUT" />
     </root>
 

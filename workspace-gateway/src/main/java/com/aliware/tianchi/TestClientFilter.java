@@ -3,6 +3,7 @@ package com.aliware.tianchi;
 import com.aliware.DisposableScheduledTaskUtil;
 import com.aliware.Pair;
 import com.aliware.config.HostUtil;
+import com.aliware.log.LogUtil;
 import com.aliware.tianchi.cluster.ClusterContext;
 import org.apache.dubbo.common.Constants;
 import org.apache.dubbo.common.extension.Activate;
@@ -22,8 +23,6 @@ import java.util.concurrent.TimeUnit;
 @Activate(group = Constants.CONSUMER)
 public class TestClientFilter implements Filter {
 
-    private static Logger logger = LoggerFactory.getLogger(TestClientFilter.class);
-
     static {
         // 加一个线程用于记录发给每个服务器的请求量
         DisposableScheduledTaskUtil.scheduleAtFixedRate(() -> {
@@ -41,7 +40,7 @@ public class TestClientFilter implements Filter {
                 exacts[i] = pair.getV();
                 expects[i] = ClusterContext.getExpectThrouhput(hostCode, collectTimes[i]);
             }
-            logger.info("统计请求量 collectTime=[" + collectTimes[0] + ", " + collectTimes[1] + ", " + collectTimes[2] + "]"
+            LogUtil.info("统计请求量 collectTime=[" + collectTimes[0] + ", " + collectTimes[1] + ", " + collectTimes[2] + "]"
                     + " expect=[" + expects[0] + ", " + expects[1] + ", " + expects[2] + "]"
                     + " exact=[" + exacts[0] + ", " + exacts[1] + ", " + exacts[2] + "]");
         }, 1, 1, TimeUnit.SECONDS);

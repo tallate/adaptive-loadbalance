@@ -24,7 +24,7 @@ public class SelectFuntion implements Function<Cluster, Byte> {
                 .filter(state -> state.match(cluster))
                 .findFirst();
         // LOG: 记录算法切换过程
-        // logger.info(Clu"BusyState selected");
+        // LogUtil.info(Clu"BusyState selected");
         if (!matchedState.isPresent()) {
             throw new RuntimeException("没有匹配的集群状态，救不了");
         }

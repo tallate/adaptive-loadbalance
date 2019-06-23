@@ -5,6 +5,7 @@ import com.aliware.TimeUtil;
 import com.aliware.cluster.Cluster;
 import com.aliware.cluster.Server;
 import com.aliware.counter.Counter;
+import com.aliware.log.LogUtil;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 
@@ -16,8 +17,6 @@ import java.util.function.Function;
 /**
  */
 public class ClusterContext {
-
-    private static final Logger logger = LoggerFactory.getLogger(ClusterContext.class);
 
     private static Cluster cluster = new Cluster();
 
@@ -71,7 +70,7 @@ public class ClusterContext {
         }
         double avgLoad = sumLoad / cluster.getServerMap().size();
         // LOG: 统计平均负载计算过程
-        logger.info("平均负载avgLoad=" + avgLoad
+        LogUtil.info("平均负载avgLoad=" + avgLoad
                 + " loads=[" + loads[0] + ", "
                 + loads[1] + ", " + loads[2] + "]"
                 + " expects=[" + expects[0] + ", "
