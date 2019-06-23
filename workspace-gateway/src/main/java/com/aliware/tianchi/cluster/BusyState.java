@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.aliware.config.LoadConfig.EXTEND_FACTOR;
+import static com.aliware.config.LoadConfig.BOOST_FACTOR;
 import static com.aliware.config.LoadConfig.LOAD_THRESHOLD;
 
 /**
@@ -34,7 +34,7 @@ public class BusyState implements ClusterState {
     private double boostLoad(double load) {
         return load <= 1 ?
                 load :
-                1 + (load - 1) * EXTEND_FACTOR;
+                1 + (load - 1) * BOOST_FACTOR;
     }
 
     private IntervalSelector intervalSelector = new IntervalSelector(10, true);
