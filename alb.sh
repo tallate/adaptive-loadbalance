@@ -56,10 +56,14 @@ elif [ $1 = 'warmup' ]; then
     # warmup
     cd ${ROOT_DIR}/localtest
     wrk -t2 -c512 -d30s -T5 --script=./wrk.lua --latency http://localhost:8087/invoke
-elif [ $1 = 'press' ]; then
+elif [ $1 = 'press-1' ]; then
     # pressure test
     cd ${ROOT_DIR}/localtest
     wrk -t4 -c1024 -d60s -T5 --script=./wrk.lua --latency http://localhost:8087/invoke
+elif [ $1 = 'press-2' ]; then
+    # pressure test
+    cd ${ROOT_DIR}/localtest
+    wrk -t8 -c4096 -d60s -T5 --script=./wrk.lua --latency http://localhost:8087/invoke
 elif []; then
     echo "不支持的命令:"$1", 具体格式见脚本"
 fi

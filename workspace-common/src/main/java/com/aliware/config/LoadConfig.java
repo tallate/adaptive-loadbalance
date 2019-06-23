@@ -10,7 +10,7 @@ public class LoadConfig {
      */
     public static final double LOAD_THRESHOLD = 0.01;
 
-    public static final double BOOST_FACTOR = 5;
+    public static final double BOOST_FACTOR = 2;
 
     /**
      * TODO: 骚操作应该去掉，现实环境中绝对不能这么用

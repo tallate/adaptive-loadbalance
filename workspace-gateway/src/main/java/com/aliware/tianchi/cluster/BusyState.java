@@ -37,7 +37,7 @@ public class BusyState implements ClusterState {
                 1 + (load - 1) * BOOST_FACTOR;
     }
 
-    private IntervalSelector intervalSelector = new IntervalSelector(10, true);
+    private IntervalSelector intervalSelector = new IntervalSelector(20, true);
 
     @SuppressWarnings("unchecked")
     @Override
@@ -59,7 +59,7 @@ public class BusyState implements ClusterState {
                 .collect(Collectors.toList());
         // LOG: 记录所有计算出的权重
         if (intervalSelector.get()) {
-            LogUtil.info("所有权重=[" + weights.get(0) + ", " + weights.get(1) + ", " + weights.get(2) + "" + "]");
+            LogUtil.info("所有权重=[" + entries[0].getKey() + ":" + weights.get(0) + ", " + entries[1].getKey() + ":" + weights.get(1) + ", " + entries[2].getKey() + ":" + weights.get(2) + "" + "]");
         }
         // 计算赋权随机数
         int pos = RandomUtil.randOne(weights);
