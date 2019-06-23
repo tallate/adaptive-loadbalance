@@ -51,9 +51,12 @@ public class BusyState implements ClusterState {
                 .map(entry -> {
                     // 大部分情况下过载在数值上不会特别明显，extend过程扩大了这部分的影响
                     double load = extendLoad(entry.getValue().getLoad());
-                    return entry.getValue().getLoad() == 0 ?
+                    double loadFactor = entry.getValue().getLoad() == 0 ?
                             1 :
                             1.0 / load;
+                    // TODO: 骚操作应该去掉，实际环境中绝对不能这么用
+                    double hostFactor = entry.getKey();
+                    return loadFactor * hostFactor;
                 })
                 .collect(Collectors.toList());
         // LOG: 记录所有计算出的权重
