@@ -19,7 +19,7 @@ public class ServerContext {
      * @param t 时间 / s
      */
     public static long getReqCount(long t) {
-        return REQ_COUNTER.get(t);
+        return REQ_COUNTER.getOrDefault(t, 0L);
     }
 
 }

@@ -15,6 +15,6 @@ public class LoadConfig {
      */
     public static final double LOAD_THRESHOLD = 0.05;
 
-    public static final double EXTEND_FACTOR = 2;
+    public static final double EXTEND_FACTOR = 10;
 
 }
