@@ -12,4 +12,11 @@ public class LoadConfig {
 
     public static final double EXTEND_FACTOR = 5;
 
+    /**
+     * TODO: 骚操作应该去掉，现实环境中绝对不能这么用
+     */
+    public static double getHostFactor(byte hostCode) {
+        return hostCode;
+    }
+
 }

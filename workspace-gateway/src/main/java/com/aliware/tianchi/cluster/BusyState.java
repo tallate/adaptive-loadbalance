@@ -4,6 +4,8 @@ import com.aliware.IntervalSelector;
 import com.aliware.RandomUtil;
 import com.aliware.cluster.Cluster;
 import com.aliware.cluster.Server;
+import com.aliware.config.HostUtil;
+import com.aliware.config.LoadConfig;
 import com.aliware.log.LogUtil;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
@@ -54,8 +56,7 @@ public class BusyState implements ClusterState {
                     double loadFactor = entry.getValue().getLoad() == 0 ?
                             1 :
                             1.0 / load;
-                    // TODO: 骚操作应该去掉，实际环境中绝对不能这么用
-                    double hostFactor = entry.getKey();
+                    double hostFactor = LoadConfig.getHostFactor(entry.getKey());
                     return loadFactor * hostFactor;
                 })
                 .collect(Collectors.toList());
