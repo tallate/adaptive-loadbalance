@@ -1,18 +1,12 @@
 package com.aliware.tianchi;
 
 import com.aliware.DisposableScheduledTaskUtil;
+import com.aliware.IntervalSelector;
 import com.aliware.cluster.Cluster;
 import com.aliware.config.HostUtil;
 import com.aliware.config.LoadConfig;
 import com.aliware.tianchi.cluster.ClusterContext;
 import com.aliware.tianchi.cluster.SelectFuntion;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
@@ -20,6 +14,14 @@ import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.cluster.LoadBalance;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 /**
  * @author daofeng.xjf
@@ -30,16 +32,6 @@ import org.apache.dubbo.rpc.cluster.LoadBalance;
  * 选手需要基于此类实现自己的负载均衡算法
  */
 public class UserLoadBalance implements LoadBalance {
-
-    private static final Logger logger = LoggerFactory.getLogger(UserLoadBalance.class);
-
-    private static final AtomicBoolean WARMUP = new AtomicBoolean(true);
-
-    static {
-        DisposableScheduledTaskUtil.submitDelayTask(() -> {
-            WARMUP.set(false);
-        }, LoadConfig.WARMUP_TIME, TimeUnit.MILLISECONDS);
-    }
 
     /**
      * 这个函数在上下文中的所有服务器中选出目标服务器（通过负载均衡算法）
@@ -54,14 +46,15 @@ public class UserLoadBalance implements LoadBalance {
         }
     }
 
+    private static final IntervalSelector INTERVAL_SELECTOR = new IntervalSelector(10, true);
+
     @Override
     public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) throws RpcException {
-        if (WARMUP.get()) {
-            // 利用官方提供的默认随机算法预热
-            int pos = ThreadLocalRandom.current().nextInt(invokers.size());
-            return invokers.get(pos);
-        }
         Byte targetHostCode = selectTargetHost();
+        // LOG: 记录负载均衡算法选中的是哪台
+        // if (INTERVAL_SELECTOR.get()) {
+        //     LogUtil.info("选中目标服务器=" + targetHostCode);
+        // }
         Optional<Invoker<T>> target = invokers.stream()
                 .filter(invoker -> {
                     // 调整主机名格式一致

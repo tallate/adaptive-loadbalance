@@ -1,7 +1,8 @@
 package com.aliware.tianchi;
 
-import com.aliware.MessageUtil;
+import com.aliware.cluster.MessageUtil;
 import com.aliware.cluster.Server;
+import com.aliware.log.LogUtil;
 import com.aliware.tianchi.server.ServerGenerator;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
@@ -67,6 +68,9 @@ public class CallbackServiceImpl implements CallbackService {
             logger.error("生成失败了，有没有搞错", e);
         }
         // 编码
-        return server == null ? null : MessageUtil.encode(server);
+        String content = server == null ? null : MessageUtil.encode(server);
+        // LOG: 记录发往consumer的内容
+        LogUtil.info("发往consumer的message内容： " + content);
+        return content;
     }
 }

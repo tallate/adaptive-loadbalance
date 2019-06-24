@@ -16,6 +16,8 @@ elif [ $1 = 'stop-0' ]; then
     docker rm provider-default-medium
     docker stop provider-default-small
     docker rm provider-default-small
+    docker image rm consumer-default
+    docker image rm provider-default
 elif [ $1 = 'run-0' ]; then
     # 本地 Docker 跑官方版本
     cd ${ROOT_DIR}/localtest/debian-jdk8-adaptive-loadbalance/debian-jdk8-provider
@@ -35,6 +37,8 @@ elif [ $1 = 'stop-1' ]; then
     docker rm provider-medium
     docker stop provider-small
     docker rm provider-small
+    docker image rm provider
+    docker image rm consumer
 elif [ $1 = 'run-1' ]; then
     # 本地 Docker 跑一个
     # 构建最新的provider
@@ -52,10 +56,20 @@ elif [ $1 = 'warmup' ]; then
     # warmup
     cd ${ROOT_DIR}/localtest
     wrk -t2 -c512 -d30s -T5 --script=./wrk.lua --latency http://localhost:8087/invoke
-elif [ $1 = 'press' ]; then
+elif [ $1 = 'press-1' ]; then
     # pressure test
     cd ${ROOT_DIR}/localtest
     wrk -t4 -c1024 -d60s -T5 --script=./wrk.lua --latency http://localhost:8087/invoke
+elif [ $1 = 'press-2' ]; then
+    # pressure test
+    cd ${ROOT_DIR}/localtest
+    wrk -t4 -c1536 -d60s -T5 --script=./wrk.lua --latency http://localhost:8087/invoke
+elif [ $1 = 'press-3' ]; then
+    # pressure test
+    cd ${ROOT_DIR}/localtest
+    wrk -t8 -c4096 -d60s -T5 --script=./wrk.lua --latency http://localhost:8087/invoke
+else
+    echo "不支持的命令:"$1", 具体格式见脚本"
 fi
 
 

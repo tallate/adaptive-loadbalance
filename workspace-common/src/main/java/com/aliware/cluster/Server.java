@@ -13,19 +13,51 @@ public class Server implements Serializable {
     private byte hostCode;
 
     /**
+     * 吞吐量收集时间 / s
+     */
+    private long collectTime;
+
+    /**
      * 吞吐量
      */
     private long throughput;
 
     /**
-     * 负载
+     * 快照生成时间（provider给出）
+     */
+    private long time;
+
+    /**
+     * 负载（consumer动态计算）
      */
     private double load;
 
     /**
-     * 快照生成时间
+     * 权重，根据负载情况动态更新（consumer端动态更新）
      */
-    private long time;
+    private double weight;
+
+    public Server(byte hostCode) {
+        this.hostCode = hostCode;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public Server setWeight(double weight) {
+        this.weight = weight;
+        return this;
+    }
+
+    public long getCollectTime() {
+        return collectTime;
+    }
+
+    public Server setCollectTime(long collectTime) {
+        this.collectTime = collectTime;
+        return this;
+    }
 
     public long getThroughput() {
         return throughput;
@@ -67,8 +99,10 @@ public class Server implements Serializable {
     public String toString() {
         return "Server{" +
                 "hostCode=" + hostCode +
-                ", load=" + load +
+                ", collectTime=" + collectTime +
+                ", throughput=" + throughput +
                 ", time=" + time +
+                ", load=" + load +
                 '}';
     }
 

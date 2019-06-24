@@ -1,19 +1,20 @@
 package com.aliware.cluster;
 
-import com.aliware.CircularQueue;
-import com.aliware.config.SamplingConfig;
+import com.aliware.counter.Counter;
 import org.apache.dubbo.common.utils.CollectionUtils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Cluster implements Serializable {
 
     /**
-     * 记录每个
+     * 服务端属性
      */
-    private final Map<Byte, CircularQueue<Long>> circularQueueMap = new HashMap<>();
+    private final Map<Byte, Counter<Long>> serverCounterMap = new HashMap<>();
 
     /**
      * 服务器实时属性<hostCode, Server>
@@ -21,15 +22,33 @@ public class Cluster implements Serializable {
     private final Map<Byte, Server> serverMap = new HashMap<>();
 
     /**
+     * 按code进行排序
+     */
+    private final List<Server> servers = new ArrayList<>();
+
+    /**
      * 平均负载
      */
     private double avgLoad;
 
     public Cluster() {
-        // TODO: 初始化，这里硬编码了
-        circularQueueMap.put((byte) 1, new CircularQueue<>(SamplingConfig.MAX_THROUGHPUT));
-        circularQueueMap.put((byte) 2, new CircularQueue<>(SamplingConfig.MAX_THROUGHPUT));
-        circularQueueMap.put((byte) 3, new CircularQueue<>(SamplingConfig.MAX_THROUGHPUT));
+        // 初始化所有服务器，并给一个初始权重
+        Server small = new Server((byte) 1).setWeight(1);
+        Server medium = new Server((byte) 2).setWeight(2);
+        Server large = new Server((byte) 3).setWeight(3);
+        serverMap.put((byte) 1, small);
+        serverMap.put((byte) 2, medium);
+        serverMap.put((byte) 3, large);
+        servers.add(small);
+        servers.add(medium);
+        servers.add(large);
+        serverCounterMap.put((byte) 1, new Counter<>());
+        serverCounterMap.put((byte) 2, new Counter<>());
+        serverCounterMap.put((byte) 3, new Counter<>());
+    }
+
+    public Counter<Long> getServerCounterByHostCode(byte hostCode) {
+        return serverCounterMap.get(hostCode);
     }
 
     public Server getServer(Byte hostCode) {
@@ -48,12 +67,8 @@ public class Cluster implements Serializable {
         return serverMap;
     }
 
-    public Map<Byte, CircularQueue<Long>> getCircularQueueMap() {
-        return circularQueueMap;
-    }
-
-    public CircularQueue<Long> getCircularQueue(byte hostCode) {
-        return circularQueueMap.get(hostCode);
+    public List<Server> getServersAsList() {
+        return servers;
     }
 
     public double getAvgLoad() {
@@ -64,4 +79,5 @@ public class Cluster implements Serializable {
         this.avgLoad = avgLoad;
         return this;
     }
+
 }

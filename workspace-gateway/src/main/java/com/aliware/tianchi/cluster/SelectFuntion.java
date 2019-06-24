@@ -23,11 +23,14 @@ public class SelectFuntion implements Function<Cluster, Byte> {
         Optional<ClusterState> matchedState = STATES.stream()
                 .filter(state -> state.match(cluster))
                 .findFirst();
+        // LOG: 记录算法切换过程
+        // LogUtil.info(Clu"BusyState selected");
         if (!matchedState.isPresent()) {
             throw new RuntimeException("没有匹配的集群状态，救不了");
         }
-        return matchedState.get()
+        byte hostCode = matchedState.get()
                 .select(cluster)
                 .getHostCode();
+        return hostCode;
     }
 }

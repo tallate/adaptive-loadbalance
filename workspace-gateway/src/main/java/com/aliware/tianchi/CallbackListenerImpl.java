@@ -1,6 +1,6 @@
 package com.aliware.tianchi;
 
-import com.aliware.MessageUtil;
+import com.aliware.cluster.MessageUtil;
 import com.aliware.cluster.Server;
 import com.aliware.tianchi.cluster.ClusterContext;
 import org.apache.dubbo.common.logger.Logger;
@@ -30,14 +30,15 @@ public class CallbackListenerImpl implements CallbackListener {
 
     @Override
     public void receiveServerMsg(String msg) {
-        logger.error(msg);
+        // LOG: 记录每次从provider上传的消息
+        // LogUtil.info(msg);
         // 解析
         Server server = decode(msg);
         // 添加到上下文
         try {
             ClusterContext.putServer(server);
         } catch (ExecutionException e) {
-            logger.error("更新失败，放弃这次更新", e);
+            logger.error("更新失败，直接放弃这次更新", e);
         }
     }
 

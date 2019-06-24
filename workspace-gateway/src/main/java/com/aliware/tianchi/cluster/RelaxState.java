@@ -3,36 +3,31 @@ package com.aliware.tianchi.cluster;
 import com.aliware.RandomUtil;
 import com.aliware.cluster.Cluster;
 import com.aliware.cluster.Server;
-import org.apache.dubbo.common.logger.Logger;
-import org.apache.dubbo.common.logger.LoggerFactory;
 
-import java.util.Map;
-import java.util.Set;
-
-import static com.aliware.config.LoadConfig.LOAD_THRESHOLD;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 集群平均负载较低的状态
- * 1. 随机算法
+ * 1. 加权随机
+ * 2. 必须放到最后
  */
 public class RelaxState implements ClusterState {
 
-    private static final Logger logger = LoggerFactory.getLogger(RelaxState.class);
-
     @Override
     public boolean match(Cluster cluster) {
-        return cluster.getAvgLoad() < LOAD_THRESHOLD;
+        return true;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Server select(Cluster cluster) {
-        logger.info("RelaxState selected");
-        Set<Map.Entry<Byte, Server>> entrySet = cluster.getServerMap().entrySet();
-        Map.Entry<Byte, Server>[] entries = entrySet
-                .toArray(new Map.Entry[0]);
-        int pos = RandomUtil.randInt(0, entries.length - 1);
-        return entries[pos].getValue();
+        List<Server> servers = cluster.getServersAsList();
+        List<Double> weights = servers.stream()
+                .map(Server::getWeight)
+                .collect(Collectors.toList());
+        int pos = RandomUtil.randOne(weights);
+        return servers.get(pos);
     }
 
 }
