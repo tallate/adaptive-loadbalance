@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.aliware.config.LoadConfig.BOOST_FACTOR;
+import static com.aliware.config.LoadConfig.CONVERGENCE_SPEED;
 
 /**
  * 集群为繁忙状态
@@ -35,7 +35,7 @@ public class BusyState implements ClusterState {
     private double boostLoad(double load) {
         return load <= 1 ?
                 load :
-                1 + (load - 1) * BOOST_FACTOR;
+                1 + (load - 1) * CONVERGENCE_SPEED;
     }
 
     private IntervalSelector intervalSelector = new IntervalSelector(20, true);

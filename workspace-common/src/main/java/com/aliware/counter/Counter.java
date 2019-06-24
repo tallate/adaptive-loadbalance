@@ -1,31 +1,45 @@
 package com.aliware.counter;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
-
 /**
  * 计数器
+ * 1. 考虑到评测时间不会太长，直接用一个数组保存从启动时间至今的所有计数
  */
-public class Counter<T> {
+public class Counter {
 
-    private ConcurrentMap<T, AtomicLong> counterMap = new ConcurrentHashMap<>();
+    private final int maxLen;
 
-    public void incr(T t) {
-        AtomicLong newCounter = new AtomicLong();
-        AtomicLong counter = counterMap.putIfAbsent(t, newCounter);
-        if (counter != null) {
-            counter.incrementAndGet();
-        } else {
-            newCounter.incrementAndGet();
+    private final long basePos;
+
+    private final long[] counters;
+
+    public Counter(int maxLen, long basePos) {
+        this.maxLen = maxLen;
+        this.basePos = basePos;
+        counters = new long[maxLen];
+    }
+
+    private int getExactPos(long pos) {
+        return (int) (pos - basePos);
+    }
+
+    private void checkPos(long pos) {
+        long exactPos = pos - basePos;
+        if (exactPos > Integer.MAX_VALUE
+                || exactPos >= maxLen) {
+            throw new RuntimeException("超出可计数范围, pos=" + pos + ", maxLen=" + maxLen);
         }
     }
 
-    public long getOrDefault(T t, Long d) {
-        AtomicLong counter = counterMap.get(t);
-        return counter == null ?
-                (d == null ? 0 : d) :
-                counter.get();
+    public void incr(long pos) {
+        checkPos(pos);
+        int exactPos = getExactPos(pos);
+        counters[exactPos]++;
+    }
+
+    public long get(long pos) {
+        checkPos(pos);
+        int exactPos = getExactPos(pos);
+        return counters[exactPos];
     }
 
 }

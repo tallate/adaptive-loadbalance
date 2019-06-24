@@ -9,10 +9,8 @@ import com.aliware.log.LogUtil;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
 
-import static com.aliware.config.LoadConfig.LOAD_THRESHOLD_LOW_BOUND;
 import static com.aliware.config.LoadConfig.LOAD_THRESHOLD_UP_BOUND;
 
 /**
@@ -20,8 +18,6 @@ import static com.aliware.config.LoadConfig.LOAD_THRESHOLD_UP_BOUND;
 public class ClusterContext {
 
     private static Cluster cluster = new Cluster();
-
-    private static final ReentrantReadWriteLock LOCK = new ReentrantReadWriteLock();
 
     /**
      * 通过上下文计算...
@@ -99,8 +95,8 @@ public class ClusterContext {
      * @param collectTime 收集时间 / s
      */
     public static long getExpectThrouhput(byte hostCode, long collectTime) {
-        Counter<Long> counter = cluster.getServerCounterByHostCode(hostCode);
-        return counter.getOrDefault(collectTime, 0L);
+        Counter counter = cluster.getServerCounterByHostCode(hostCode);
+        return counter.get(collectTime);
     }
 
     /**
@@ -108,7 +104,7 @@ public class ClusterContext {
      */
     public static void countReq(byte hostCode) {
         long currentSecond = TimeUtil.getCurrentSecond();
-        Counter<Long> counter = cluster.getServerCounterByHostCode(hostCode);
+        Counter counter = cluster.getServerCounterByHostCode(hostCode);
         counter.incr(currentSecond);
     }
 

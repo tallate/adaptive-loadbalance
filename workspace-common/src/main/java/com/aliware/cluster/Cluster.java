@@ -1,5 +1,6 @@
 package com.aliware.cluster;
 
+import com.aliware.TimeUtil;
 import com.aliware.counter.Counter;
 import org.apache.dubbo.common.utils.CollectionUtils;
 
@@ -9,12 +10,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.aliware.config.LoadConfig.*;
+
 public class Cluster implements Serializable {
 
     /**
      * 服务端属性
      */
-    private final Map<Byte, Counter<Long>> serverCounterMap = new HashMap<>();
+    private final Map<Byte, Counter> serverCounterMap = new HashMap<>();
 
     /**
      * 服务器实时属性<hostCode, Server>
@@ -33,21 +36,21 @@ public class Cluster implements Serializable {
 
     public Cluster() {
         // 初始化所有服务器，并给一个初始权重
-        Server small = new Server((byte) 1).setWeight(1);
-        Server medium = new Server((byte) 2).setWeight(2);
-        Server large = new Server((byte) 3).setWeight(3);
+        Server small = new Server((byte) 1).setWeight(INIT_WEIGHT_SMALL);
+        Server medium = new Server((byte) 2).setWeight(INIT_WEIGHT_MEDIUM);
+        Server large = new Server((byte) 3).setWeight(INIT_WEIGHT_LARGE);
         serverMap.put((byte) 1, small);
         serverMap.put((byte) 2, medium);
         serverMap.put((byte) 3, large);
         servers.add(small);
         servers.add(medium);
         servers.add(large);
-        serverCounterMap.put((byte) 1, new Counter<>());
-        serverCounterMap.put((byte) 2, new Counter<>());
-        serverCounterMap.put((byte) 3, new Counter<>());
+        serverCounterMap.put((byte) 1, new Counter(MAX_COLLECT_TIME_LENGTH, TimeUtil.getCurrentSecond()));
+        serverCounterMap.put((byte) 2, new Counter(MAX_COLLECT_TIME_LENGTH, TimeUtil.getCurrentSecond()));
+        serverCounterMap.put((byte) 3, new Counter(MAX_COLLECT_TIME_LENGTH, TimeUtil.getCurrentSecond()));
     }
 
-    public Counter<Long> getServerCounterByHostCode(byte hostCode) {
+    public Counter getServerCounterByHostCode(byte hostCode) {
         return serverCounterMap.get(hostCode);
     }
 
