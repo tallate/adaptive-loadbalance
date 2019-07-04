@@ -1,48 +1,47 @@
 package com.aliware;
 
-import org.apache.dubbo.common.utils.CollectionUtils;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  */
 public class RandomUtil {
 
     /**
-     * 给出一个权重数组，按权重选出其中一个
+     * 加权随机
      *
-     * @return 下标
+     * @return 数组的下标
      */
-    public static int randOne(List<Double> weights) {
-        Preconditions.checkArgument(CollectionUtils.isNotEmpty(weights), "权重数组不能为空");
-        if (weights.size() == 1) {
-            return 0;
+    public static int randByWeight(double[] weights) {
+        Preconditions.checkArgument(weights != null && weights.length > 0, "权重数组不能为空");
+        double sum = 0;
+        for (double w : weights) {
+            sum += w;
         }
-        double sum = weights.stream()
-                .reduce((w1, w2) -> w1 + w2)
-                .orElse(1.0);
-        return randOne(weights, sum);
-    }
-
-    public static int randOne(List<Double> weights, double sum) {
-        List<Double> normalized = weights.stream()
-                .map(weight -> {
-                    if (weight <= 0) {
-                        throw new RuntimeException("权重不可 <= 0");
-                    }
-                    return weight / sum;
-                })
-                .collect(Collectors.toList());
-        double pos = randDbl(0, 1);
-        double curSum = 0;
-        for (int i = 0; i < normalized.size(); i++) {
-            curSum += normalized.get(i);
-            if (curSum >= pos) {
+        double r = randDbl(0, sum);
+        for (int i = 0; i < weights.length; i++) {
+            r -= weights[i];
+            if (r <= 0) {
                 return i;
             }
         }
-        throw new RuntimeException("wtf???");
+        throw new RuntimeException("加权随机计算错误？？？");
+    }
+
+    public static int randByWeight(List<Double> weights) {
+        Preconditions.checkArgument(weights != null && !weights.isEmpty(), "权重数组不能为空");
+        double sum = 0;
+        for (Double w : weights) {
+            Preconditions.checkArgument(w != null, "权重不能为空");
+            sum += w;
+        }
+        double r = randDbl(0, sum);
+        for (int i = 0; i < weights.size(); i++) {
+            r -= weights.get(i);
+            if (r <= 0) {
+                return i;
+            }
+        }
+        throw new RuntimeException("加权随机计算错误？？？");
     }
 
     /**

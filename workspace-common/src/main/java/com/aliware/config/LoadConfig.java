@@ -5,6 +5,16 @@ package com.aliware.config;
 public class LoadConfig {
 
     /**
+     * gateway 更新
+     */
+    public static final boolean GATEWAY_UPDATE = true;
+
+    /**
+     * provider 反馈
+     */
+    public static final boolean PROVIDER_FEEDBACK = false;
+
+    /**
      * 上界，数太大一般是在预热或别的什么抖动
      */
     public static final double LOAD_THRESHOLD_UP_BOUND = 0.1;

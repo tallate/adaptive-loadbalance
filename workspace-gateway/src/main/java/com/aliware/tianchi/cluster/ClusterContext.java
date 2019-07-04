@@ -30,11 +30,15 @@ public class ClusterContext {
         return result;
     }
 
+    public static void updateServerByGateway() {
+
+    }
+
     /**
      * 将一个服务器信息添加到上下文
      * TODO: 改成无锁的
      */
-    public static void putServer(Server server) throws ExecutionException {
+    public static void updateServerByProvider(Server server) throws ExecutionException {
         // LOCK.writeLock().lock();
         // 将server添加到上下文
         Server origin = cluster.getServer(server.getHostCode());
@@ -44,7 +48,7 @@ public class ClusterContext {
                     .setThroughput(server.getThroughput())
                     .setTime(server.getTime());
             // 没必要整个覆盖
-            // cluster.putServer(server.getHostCode(), server);
+            // cluster.updateServerByProvider(server.getHostCode(), server);
         }
         // 计算平均负载，因为provider反馈的会有延迟、肯定比consumer端统计的要晚，所以以provider的采集时间为准
         double sumLoad = 0;

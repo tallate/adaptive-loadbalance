@@ -2,17 +2,17 @@ package com.aliware.tianchi;
 
 import com.aliware.cluster.MessageUtil;
 import com.aliware.cluster.Server;
+import com.aliware.config.LoadConfig;
 import com.aliware.log.LogUtil;
 import com.aliware.tianchi.server.ServerGenerator;
-import org.apache.dubbo.common.logger.Logger;
-import org.apache.dubbo.common.logger.LoggerFactory;
-import org.apache.dubbo.rpc.listener.CallbackListener;
-import org.apache.dubbo.rpc.service.CallbackService;
-
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
+import org.apache.dubbo.common.logger.Logger;
+import org.apache.dubbo.common.logger.LoggerFactory;
+import org.apache.dubbo.rpc.listener.CallbackListener;
+import org.apache.dubbo.rpc.service.CallbackService;
 
 /**
  * @author daofeng.xjf
@@ -30,12 +30,14 @@ public class CallbackServiceImpl implements CallbackService {
             @Override
             public void run() {
                 if (!listeners.isEmpty()) {
-                    for (Map.Entry<String, CallbackListener> entry : listeners.entrySet()) {
-                        try {
-                            String content = genContent();
-                            entry.getValue().receiveServerMsg(content);
-                        } catch (Throwable t1) {
-                            listeners.remove(entry.getKey());
+                    if (LoadConfig.PROVIDER_FEEDBACK) {
+                        for (Map.Entry<String, CallbackListener> entry : listeners.entrySet()) {
+                            try {
+                                String content = genContent();
+                                entry.getValue().receiveServerMsg(content);
+                            } catch (Throwable t1) {
+                                listeners.remove(entry.getKey());
+                            }
                         }
                     }
                 }
@@ -54,9 +56,11 @@ public class CallbackServiceImpl implements CallbackService {
     @Override
     public void addListener(String key, CallbackListener listener) {
         listeners.put(key, listener);
-        String content = genContent();
-        // 发送给 consumer
-        listener.receiveServerMsg(content);
+        if (LoadConfig.PROVIDER_FEEDBACK) {
+            String content = genContent();
+            // 发送给 consumer
+            listener.receiveServerMsg(content);
+        }
     }
 
     private String genContent() {

@@ -26,7 +26,7 @@ public class RelaxState implements ClusterState {
         List<Double> weights = servers.stream()
                 .map(Server::getWeight)
                 .collect(Collectors.toList());
-        int pos = RandomUtil.randOne(weights);
+        int pos = RandomUtil.randByWeight(weights);
         return servers.get(pos);
     }
 

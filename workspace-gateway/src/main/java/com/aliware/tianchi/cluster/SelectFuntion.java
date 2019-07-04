@@ -14,7 +14,6 @@ public class SelectFuntion implements Function<Cluster, Byte> {
     private static final List<ClusterState> STATES = new ArrayList<>();
 
     public SelectFuntion() {
-        STATES.add(new BusyState());
         STATES.add(new RelaxState());
     }
 
@@ -24,7 +23,7 @@ public class SelectFuntion implements Function<Cluster, Byte> {
                 .filter(state -> state.match(cluster))
                 .findFirst();
         // LOG: 记录算法切换过程
-        // LogUtil.info(Clu"BusyState selected");
+        // LogUtil.info(Clu"RelaxState selected");
         if (!matchedState.isPresent()) {
             throw new RuntimeException("没有匹配的集群状态，救不了");
         }
